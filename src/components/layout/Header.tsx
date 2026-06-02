@@ -6,7 +6,6 @@ import { useAuth } from '@/context/AuthContext';
 interface HeaderProps {
   title?: string;
   showBack?: boolean;
-  transparent?: boolean;
   rightAction?: React.ReactNode;
 }
 
@@ -21,7 +20,7 @@ const pageTitles: Record<string, string> = {
   '/more': 'Lainnya',
 };
 
-export default function Header({ title, showBack = false, transparent = false, rightAction }: HeaderProps) {
+export default function Header({ title, showBack = false, rightAction }: HeaderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -33,11 +32,7 @@ export default function Header({ title, showBack = false, transparent = false, r
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`${transparent ? 'absolute w-full' : 'sticky'} top-0 z-40 safe-top ${
-        transparent
-          ? 'bg-transparent'
-          : 'glass border-b border-white/10'
-      }`}
+      className={`relative z-40 safe-top glass border-b border-white/10`}
     >
       <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
