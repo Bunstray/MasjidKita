@@ -446,7 +446,7 @@ export default function Qibla() {
           transition={{ delay: 0.7 }}
           className="mt-6 text-center"
         >
-          <p className="arabic-text text-xl text-primary/80" dir="rtl">فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ</p>
+          <p className="arabic-text text-xl text-primary/80 text-center" dir="rtl" style={{ textAlign: 'center' }}>فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ</p>
           <p className="mt-2 text-xs text-text-muted px-4">
             &ldquo;Maka hadapkanlah wajahmu ke arah Masjidil Haram&rdquo; — QS. Al-Baqarah: 144
           </p>
