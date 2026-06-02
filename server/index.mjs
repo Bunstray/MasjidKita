@@ -390,6 +390,27 @@ app.get('/api/news', async (_req, res) => {
 });
 
 // ═══════════════════════════════════════════
+// NEWS: Get Single (public)
+// ═══════════════════════════════════════════
+app.get('/api/news/:id', async (req, res) => {
+  try {
+    const id = sanitize(req.params.id, 50);
+    const result = await pool.query(
+      `SELECT id, title, content, category, image_url, author_name, created_at
+       FROM news WHERE id = $1 AND is_published = true`,
+      [id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Berita tidak ditemukan' });
+    }
+    res.json({ success: true, data: result.rows[0] });
+  } catch (err) {
+    console.error('GET /api/news/:id error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
 // NEWS: Create (admin only)
 // ═══════════════════════════════════════════
 app.post('/api/admin/news', authMiddleware(true), async (req, res) => {

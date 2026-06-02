@@ -10,6 +10,7 @@ import DigitalInfaq from '@/pages/DigitalInfaq';
 import InfaqHistory from '@/pages/InfaqHistory';
 import Qibla from '@/pages/Qibla';
 import News from '@/pages/News';
+import NewsDetail from '@/pages/NewsDetail';
 import Dua from '@/pages/Dua';
 import More from '@/pages/More';
 
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="/infaq/history" element={<InfaqHistory />} />
               <Route path="/qibla" element={<Qibla />} />
               <Route path="/news" element={<News />} />
+              <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/dua" element={<Dua />} />
               <Route path="/more" element={<More />} />
               <Route path="/profile" element={<Profile />} />

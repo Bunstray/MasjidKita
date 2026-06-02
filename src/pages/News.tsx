@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, PartyPopper, Megaphone, RefreshCw, Newspaper, BookOpen } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -120,15 +121,15 @@ export default function News() {
               {filteredArticles.map((article, idx) => {
                 const config = categoryConfig[article.category] || categoryConfig['Berita'];
                 return (
-                  <motion.article
+                  <motion.div
                     key={article.id}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ delay: idx * 0.08, duration: 0.35 }}
-                    className="pressable overflow-hidden rounded-xl bg-white shadow-md"
                   >
+                    <Link to={`/news/${article.id}`} className="pressable block overflow-hidden rounded-xl bg-white shadow-md">
                     {/* Image placeholder with gradient or actual image */}
                     <div
                       className={`relative flex h-40 items-center justify-center bg-gradient-to-br ${config.gradient}`}
@@ -174,7 +175,8 @@ export default function News() {
                         {article.content || article.excerpt}
                       </p>
                     </div>
-                  </motion.article>
+                    </Link>
+                  </motion.div>
                 );
               })}
             </div>

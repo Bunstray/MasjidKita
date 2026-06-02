@@ -306,7 +306,7 @@ export default function Dashboard() {
 
           <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 scrollbar-none">
             {news.slice(0, 4).map((article, index) => (
-              <Link key={article.id} to="/news" className="pressable flex-shrink-0">
+              <Link key={article.id} to={`/news/${article.id}`} className="pressable flex-shrink-0">
                 <motion.div
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
