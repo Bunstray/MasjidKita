@@ -87,7 +87,7 @@ Agar frontend (Vercel) bisa berkomunikasi dengan backend (Render), Anda harus me
 
 ---
 
-## 🛠️ Cara Menjalankan Secara Lokal (Development)
+## Cara Menjalankan Secara Lokal (Development)
 
 Jika Anda ingin mengembangkan aplikasi ini di komputer Anda sendiri:
 
