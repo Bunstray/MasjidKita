@@ -14,76 +14,39 @@ MasjidKita adalah aplikasi web modern berbasis PWA (Progressive Web App) yang di
 
 ---
 
-## Panduan Deployment (Hosting Gratis)
+## Panduan Deployment (100% Gratis, Tanpa Kartu Kredit)
 
-Aplikasi ini menggunakan arsitektur _Decoupled_ (Frontend dan Backend terpisah) serta _Database-as-a-Service_. Berikut adalah panduan untuk meng-host aplikasi ini di internet menggunakan layanan gratis (Vercel, Render, dan Supabase).
+Sistem ini telah dikonfigurasi agar **Frontend dan Backend dapat berjalan bersama-sama secara gratis di Vercel**. Vercel sama sekali tidak memerlukan kartu kredit untuk paket _Hobby/Personal_.
 
 ### Arsitektur Hosting
 
-1. **Database**: Supabase PostgreSQL (Sudah di-setup)
-2. **Backend API (Node.js/Express)**: Render.com (Web Service Gratis)
-3. **Frontend (React/Vite)**: Vercel (Gratis)
+1. **Database**: Supabase PostgreSQL (Sudah di-setup, gratis tanpa kartu kredit).
+2. **Frontend & Backend (Monolith Serverless)**: Vercel.com
 
 ---
 
-### Tahap 1: Setup Backend di Render.com
+### Langkah-langkah Deploy ke Vercel
 
-Backend bertanggung jawab untuk mengelola koneksi database, autentikasi (JWT), dan keamanan API.
+1. **Buat Akun Vercel**: Buka [Vercel.com](https://vercel.com) dan daftar menggunakan akun GitHub Anda.
+2. **Import Project**:
+   - Klik **Add New...** lalu pilih **Project**.
+   - Import repository GitHub aplikasi MasjidKita ini.
+3. **Konfigurasi Environment Variables**:
+   - Sebelum klik tombol deploy, buka tab **Environment Variables**.
+   - Tambahkan 3 variabel berikut:
+     1. `DATABASE_URL` = `postgresql://postgres.probjxogsmzzdyuwzufb:MRBS_2046!!@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
+     2. `JWT_SECRET` = _(Isi dengan password rahasia acak yang panjang, contoh: `kunci_rahasia_masjidkita_123`)_
+     3. `VERCEL` = `1`
+4. **Deploy**:
+   - Klik tombol **Deploy**.
+   - Tunggu proses _build_ selesai. Vercel akan membaca file `vercel.json` secara otomatis, mengubah API backend (Express) menjadi Serverless Functions, dan me-render frontend Vite.
+5. **Update VITE_API_URL (Sangat Penting)**:
+   - Setelah deploy selesai, Vercel akan memberikan domain publik (contoh: `https://masjidkita-app.vercel.app`).
+   - Pergi ke menu **Settings > Environment Variables** di dashboard project Vercel Anda.
+   - Tambahkan variabel baru: `VITE_API_URL` dan isi dengan domain publik aplikasi Vercel Anda tersebut (contoh: `https://masjidkita-app.vercel.app`).
+   - Pergi ke menu **Deployments**, klik titik tiga pada deployment terbaru, lalu pilih **Redeploy** agar frontend mendapatkan URL API yang benar.
 
-1. Buat akun di [Render.com](https://render.com) (bisa menggunakan akun GitHub).
-2. Klik **New +** dan pilih **Web Service**.
-3. Hubungkan dengan repository GitHub Anda yang berisi kode aplikasi ini.
-4. Pada menu konfigurasi, isi sebagai berikut:
-   - **Name**: `masjidkita-api` (atau sesuka Anda)
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm run server`
-   - **Instance Type**: Pilih `Free`
-5. Scroll ke bawah dan buka **Advanced** -> **Environment Variables**. Masukkan variabel berikut:
-   - `PORT` = `3001`
-   - `DATABASE_URL` = `postgresql://postgres.probjxogsmzzdyuwzufb:MRBS_2046!!@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
-   - `JWT_SECRET` = _(Isi dengan teks acak yang sangat panjang, misalnya dari password generator)_
-6. Klik **Create Web Service**.
-7. Tunggu beberapa menit hingga status menjadi `Live`. Salin URL yang diberikan Render (contoh: `https://masjidkita-api.onrender.com`).
-
----
-
-### Tahap 2: Setup Frontend di Vercel
-
-Frontend adalah antarmuka React yang akan diakses oleh pengguna.
-
-1. Buka file `server/index.mjs` di dalam kode sumber Anda.
-2. Pastikan domain Vercel Anda nanti (atau allow semua untuk sementara `*`) dimasukkan ke dalam `ALLOWED_ORIGINS` di konfigurasi CORS backend.
-3. Buat akun di [Vercel](https://vercel.com) menggunakan GitHub.
-4. Klik **Add New...** -> **Project**.
-5. Import repository GitHub aplikasi ini.
-6. Pada menu konfigurasi Vercel:
-   - **Framework Preset**: Vercel biasanya otomatis mendeteksi `Vite`.
-   - Buka bagian **Environment Variables** dan tambahkan:
-     - `VITE_API_URL` = _(URL Backend dari Render di Tahap 1, contoh: `https://masjidkita-api.onrender.com`)_
-7. Klik **Deploy**.
-8. Setelah selesai, Vercel akan memberikan URL publik untuk aplikasi Anda (contoh: `https://masjidkita.vercel.app`).
-
----
-
-### Tahap 3: Update CORS Backend (Penting)
-
-Agar frontend (Vercel) bisa berkomunikasi dengan backend (Render), Anda harus mendaftarkan URL Vercel ke backend.
-
-1. Buka kembali dashboard Render.com.
-2. Buka project backend Anda.
-3. Namun, karena daftar `ALLOWED_ORIGINS` saat ini tertulis ("hardcoded") di `server/index.mjs` (yaitu `http://localhost:5173`), Anda harus mengubahnya di dalam kode Anda sebelum _push_ ke GitHub:
-
-   _Ubah baris ini di `server/index.mjs`:_
-
-   ```javascript
-   const ALLOWED_ORIGINS = [
-     "http://localhost:5173",
-     "https://masjidkita.vercel.app", // Tambahkan URL Vercel Anda
-   ];
-   ```
-
-4. Lakukan `git commit` dan `git push`. Render akan secara otomatis me-rebuild backend Anda dengan aturan CORS yang baru.
+**Selesai!**
 
 ---
 
@@ -97,13 +60,7 @@ Jika Anda ingin mengembangkan aplikasi ini di komputer Anda sendiri:
    npm install
    ```
 
-2. **Jalankan Database Migration (Hanya saat pertama kali):**
-
-   ```bash
-   npm run migrate
-   ```
-
-3. **Jalankan Backend (Express API):**
+2. **Jalankan Backend (Express API):**
 
    ```bash
    npm run server
@@ -111,7 +68,7 @@ Jika Anda ingin mengembangkan aplikasi ini di komputer Anda sendiri:
 
    _Server akan berjalan di http://localhost:3001_
 
-4. **Buka Terminal Baru, Jalankan Frontend (Vite):**
+3. **Buka Terminal Baru, Jalankan Frontend (Vite):**
    ```bash
    npm run dev
    ```
@@ -121,9 +78,9 @@ Jika Anda ingin mengembangkan aplikasi ini di komputer Anda sendiri:
 
 ## Akses Admin Default
 
-Saat server pertama kali dijalankan (baik lokal maupun di production), sistem akan secara otomatis membuat akun Admin _default_:
+Saat server pertama kali berjalan, sistem akan secara otomatis membuat akun Admin _default_ jika belum ada:
 
 - **Email**: `admin@masjidkita.id`
 - **Password**: `admin123`
 
-_(Sangat disarankan untuk mengubah password ini setelah deploy ke production melalui koneksi database secara manual)_
+_(Sangat disarankan untuk segera mengubah password ini setelah berhasil login di server production demi keamanan)_

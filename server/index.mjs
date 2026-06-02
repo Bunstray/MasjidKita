@@ -438,6 +438,7 @@ app.use((err, _req, res, _next) => {
 // ═══════════════════════════════════════════
 // Bootstrap: Create default admin on startup
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
 async function bootstrap() {
   try {
     const existing = await pool.query("SELECT id FROM users WHERE email = 'admin@masjidkita.id'");
@@ -454,8 +455,15 @@ async function bootstrap() {
   }
 }
 
-app.listen(PORT, async () => {
-  console.log(`🕌 MasjidKita API v2 running on http://localhost:${PORT}`);
-  console.log(`🔒 CORS: ${ALLOWED_ORIGINS.join(', ')}`);
-  await bootstrap();
-});
+// Automatically bootstrap on load (safe for serverless)
+bootstrap();
+
+// Only listen if not on Vercel (Vercel uses the exported app)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🕌 MasjidKita API v2 running on http://localhost:${PORT}`);
+    console.log(`🔒 CORS: ${ALLOWED_ORIGINS.join(', ')}`);
+  });
+}
+
+export default app;
