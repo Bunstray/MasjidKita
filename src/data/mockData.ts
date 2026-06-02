@@ -6,13 +6,13 @@ import type { PrayerSchedule, DuaCategory, Dua, NewsArticle, DonationCategory, P
 export const prayerSchedule: PrayerSchedule = {
   date: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
   hijriDate: '7 Dzulhijjah 1447 H',
-  location: 'Masjid FMIPA UGM',
+  location: 'Yogyakarta',
   prayers: [
-    { name: 'Subuh', nameAr: 'الفجر', time: '04:35', icon: 'sunrise' },
-    { name: 'Dzuhur', nameAr: 'الظهر', time: '11:55', icon: 'sun' },
-    { name: 'Ashar', nameAr: 'العصر', time: '15:15', icon: 'sunset' },
-    { name: 'Maghrib', nameAr: 'المغرب', time: '17:45', icon: 'moon' },
-    { name: 'Isya', nameAr: 'العشاء', time: '19:00', icon: 'star' },
+    { name: 'Subuh', nameAr: 'الفجر', time: '04:26', icon: 'sunrise' },
+    { name: 'Dzuhur', nameAr: 'الظهر', time: '11:41', icon: 'sun' },
+    { name: 'Ashar', nameAr: 'العصر', time: '15:00', icon: 'sunset' },
+    { name: 'Maghrib', nameAr: 'المغرب', time: '17:33', icon: 'moon' },
+    { name: 'Isya', nameAr: 'العشاء', time: '18:47', icon: 'star' },
   ],
 };
 

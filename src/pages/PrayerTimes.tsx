@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { usePrayerTimes } from '@/hooks/usePrayerTimes';
-import { prayerSchedule } from '@/data/mockData';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,7 +31,7 @@ function pad(n: number): string {
 }
 
 export default function PrayerTimes() {
-  const { nextPrayer, nextPrayerTime, nextPrayerIndex, timeRemaining, isPast } =
+  const { nextPrayer, nextPrayerTime, nextPrayerIndex, timeRemaining, isPast, schedule, loading } =
     usePrayerTimes();
 
   const gregorianDate = new Date().toLocaleDateString('id-ID', {
@@ -58,10 +57,10 @@ export default function PrayerTimes() {
           className="rounded-2xl bg-bg-card p-4 shadow-sm"
         >
           <p className="text-sm font-medium text-text-primary">{gregorianDate}</p>
-          <p className="mt-0.5 text-xs text-text-muted">{prayerSchedule.hijriDate}</p>
+          <p className="mt-0.5 text-xs text-text-muted">{loading ? '...' : schedule.hijriDate}</p>
           <div className="mt-2 flex items-center gap-1.5 text-text-secondary">
             <MapPin size={14} className="text-primary" />
-            <span className="text-xs font-medium">{prayerSchedule.location}</span>
+            <span className="text-xs font-medium">{loading ? 'Memuat lokasi...' : schedule.location}</span>
           </div>
         </motion.div>
 
@@ -121,7 +120,7 @@ export default function PrayerTimes() {
 
         {/* ── Prayer Cards List ── */}
         <motion.div variants={itemVariants} className="mt-5 space-y-3">
-          {prayerSchedule.prayers.map((prayer, index) => {
+          {schedule.prayers.map((prayer, index) => {
             const past = isPast(index);
             const isNext = index === nextPrayerIndex;
             const IconComponent = prayerIcons[index];
@@ -227,7 +226,7 @@ export default function PrayerTimes() {
           variants={itemVariants}
           className="mt-5 text-center text-[11px] text-text-muted"
         >
-          Waktu sholat berdasarkan lokasi {prayerSchedule.location}
+          Waktu sholat berdasarkan lokasi {schedule.location}
         </motion.p>
       </motion.div>
     </div>

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { usePrayerTimes } from '@/hooks/usePrayerTimes';
-import { prayerSchedule, dailyVerses } from '@/data/mockData';
+import { dailyVerses } from '@/data/mockData';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -48,7 +48,7 @@ function pad(n: number): string {
 }
 
 export default function Dashboard() {
-  const { nextPrayer, nextPrayerTime, timeRemaining } = usePrayerTimes();
+  const { nextPrayer, nextPrayerTime, timeRemaining, schedule, loading } = usePrayerTimes();
 
   // Rotating daily verse — changes every 30 seconds
   const [verseIndex, setVerseIndex] = useState(() => {
@@ -112,7 +112,7 @@ export default function Dashboard() {
                 transition={{ delay: 0.35, duration: 0.5 }}
                 className="mt-1 text-sm text-white/80"
               >
-                {prayerSchedule.hijriDate}
+                {loading ? 'Memuat tanggal...' : schedule.hijriDate}
               </motion.p>
             </div>
 
