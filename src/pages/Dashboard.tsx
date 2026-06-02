@@ -96,7 +96,7 @@ export default function Dashboard() {
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
         {/* ── Hero Section ── */}
         <motion.section variants={itemVariants} className="relative overflow-hidden">
-          <div className="pattern-overlay bg-gradient-to-br from-primary-dark via-primary to-primary-400 px-5 pb-28 pt-4">
+          <div className="pattern-overlay bg-gradient-to-br from-primary-dark via-primary to-primary-400 px-5 pb-28 pt-20">
             <div className="relative z-10">
               <motion.h2
                 initial={{ opacity: 0, x: -20 }}

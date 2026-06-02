@@ -33,7 +33,7 @@ export default function Header({ title, showBack = false, transparent = false, r
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`sticky top-0 z-40 safe-top ${
+      className={`${transparent ? 'absolute w-full' : 'sticky'} top-0 z-40 safe-top ${
         transparent
           ? 'bg-transparent'
           : 'glass border-b border-white/10'
