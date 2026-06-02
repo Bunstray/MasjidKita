@@ -3,8 +3,6 @@ import { Receipt, FileText, Loader2, TrendingUp } from 'lucide-react';
 import { formatRupiah } from '@/services/infaqReceipt';
 import { useAuth } from '@/context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
 export default function AdminDashboard() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -18,7 +16,7 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         // Fetch infaq stats
-        const resInfaq = await fetch(`${API_BASE}/api/admin/infaq`, {
+        const resInfaq = await fetch(`/api/admin/infaq`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         let infaqTotal = 0;
@@ -30,7 +28,7 @@ export default function AdminDashboard() {
         }
 
         // Fetch news stats
-        const resNews = await fetch(`${API_BASE}/api/news`);
+        const resNews = await fetch(`/api/news`);
         let newsLen = 0;
         if (resNews.ok) {
           const data = await resNews.json();

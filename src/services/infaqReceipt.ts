@@ -14,7 +14,6 @@ export interface InfaqReceipt {
 }
 
 // ── Configuration ──
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const STORAGE_KEY = 'masjidkita_infaq_receipts';
 const DEVICE_ID_KEY = 'masjidkita_device_id';
 
@@ -79,7 +78,7 @@ export async function saveReceipt(params: {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/api/infaq`, {
+    const res = await fetch(`/api/infaq`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -140,7 +139,7 @@ export async function getReceipts(token?: string | null): Promise<InfaqReceipt[]
   }
 
   try {
-    const res = await fetch(`${API_BASE}/api/infaq`, {
+    const res = await fetch(`/api/infaq`, {
       headers,
     });
 
@@ -170,7 +169,7 @@ export async function getReceiptById(id: string): Promise<InfaqReceipt | null> {
 
   // Try server
   try {
-    const res = await fetch(`${API_BASE}/api/infaq/${encodeURIComponent(id)}`);
+    const res = await fetch(`/api/infaq/${encodeURIComponent(id)}`);
     if (!res.ok) return null;
     const json = await res.json();
     return json.data;

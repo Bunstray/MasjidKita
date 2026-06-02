@@ -4,8 +4,6 @@ import { FileText, Plus, Trash2, Loader2, Image as ImageIcon } from 'lucide-reac
 import { useAuth } from '@/context/AuthContext';
 import { formatDate } from '@/services/infaqReceipt'; // reuse for consistent dates
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
 interface NewsItem {
   id: string;
   title: string;
@@ -32,7 +30,7 @@ export default function AdminNews() {
 
   const fetchNews = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/news`);
+      const res = await fetch(`/api/news`);
       if (res.ok) {
         const data = await res.json();
         setNews(data.data);
@@ -54,7 +52,7 @@ export default function AdminNews() {
     setError('');
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/news`, {
+      const res = await fetch(`/api/admin/news`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +81,7 @@ export default function AdminNews() {
     if (!window.confirm('Yakin ingin menghapus berita ini?')) return;
     
     try {
-      const res = await fetch(`${API_BASE}/api/admin/news/${id}`, {
+      const res = await fetch(`/api/admin/news/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

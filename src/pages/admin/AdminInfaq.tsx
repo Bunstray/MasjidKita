@@ -3,8 +3,6 @@ import { Loader2 } from 'lucide-react';
 import { formatRupiah, formatDate } from '@/services/infaqReceipt';
 import { useAuth } from '@/context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
 interface AdminInfaqReceipt {
   id: string;
   date: string;
@@ -26,7 +24,7 @@ export default function AdminInfaq() {
   useEffect(() => {
     const fetchAllInfaq = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/admin/infaq`, {
+        const res = await fetch(`/api/admin/infaq`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

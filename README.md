@@ -14,9 +14,9 @@ MasjidKita adalah aplikasi web modern berbasis PWA (Progressive Web App) yang di
 
 ---
 
-## Panduan Deployment (100% Gratis, Tanpa Kartu Kredit)
+## Panduan Deployment
 
-Sistem ini telah dikonfigurasi agar **Frontend dan Backend dapat berjalan bersama-sama secara gratis di Vercel**. Vercel sama sekali tidak memerlukan kartu kredit untuk paket _Hobby/Personal_.
+Sistem ini telah dikonfigurasi agar **Frontend dan Backend dapat berjalan bersama-sama secara gratis di Vercel**.
 
 ### Arsitektur Hosting
 

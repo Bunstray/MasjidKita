@@ -4,8 +4,6 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,7 +23,7 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
+      const res = await fetch(`/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
