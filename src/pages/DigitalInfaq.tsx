@@ -215,7 +215,9 @@ export default function DigitalInfaq() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="arabic-text mb-1 text-xl text-white/90"
+                  className="arabic-text mb-1 text-xl text-white/90 text-center"
+                  dir="rtl"
+                  style={{ textAlign: 'center' }}
                 >
                   جزاك الله خيراً
                 </motion.h2>

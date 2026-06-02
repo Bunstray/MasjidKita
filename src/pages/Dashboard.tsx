@@ -260,7 +260,11 @@ export default function Dashboard() {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <p className="arabic-text mt-4 text-center text-2xl leading-[2.2] text-white">
+                  <p 
+                    className="arabic-text mt-4 text-center text-2xl leading-[2.2] text-white"
+                    dir="rtl"
+                    style={{ textAlign: 'center' }}
+                  >
                     {currentVerse.textAr}
                   </p>
 
