@@ -126,8 +126,12 @@ const app = express();
 app.use(express.json({ limit: '50kb' }));
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) cb(null, true);
-    else cb(new Error('CORS not allowed'));
+    // Allow if no origin (e.g. server-to-server), if in ALLOWED_ORIGINS, or if it's a Vercel domain
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
+      cb(null, true);
+    } else {
+      cb(new Error('CORS not allowed'));
+    }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Device-ID'],
