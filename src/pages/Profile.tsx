@@ -18,7 +18,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-primary">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-bg-primary">
       <Header showBack title="Profil Saya" />
 
       <main className="flex-1 px-4 py-6">

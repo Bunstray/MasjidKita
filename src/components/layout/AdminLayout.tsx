@@ -19,7 +19,7 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-primary">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-bg-primary">
       {/* Admin Header */}
       <header className="sticky top-0 z-40 bg-white px-4 py-3 shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center gap-3">

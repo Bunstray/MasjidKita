@@ -55,7 +55,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-primary">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-bg-primary">
       {/* Simple Header */}
       <div className="flex items-center px-4 py-4">
         <button
