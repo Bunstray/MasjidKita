@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Check, Navigation, RotateCcw, Info } from 'lucide-react';
+import { Check, Navigation, RotateCcw, Info } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 const QIBLA_DIRECTION = 295;
@@ -210,39 +210,56 @@ function CompassSVG() {
 
 export default function Qibla() {
   const [heading, setHeading] = useState(0);
-  const [isAutoRotating, setIsAutoRotating] = useState(false);
-  const autoRotateRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   const diff = angleDifference(heading, QIBLA_DIRECTION);
   const isAligned = Math.abs(diff) <= TOLERANCE;
 
-  const adjustHeading = useCallback((delta: number) => {
-    setHeading((prev) => normalizeAngle(prev + delta));
-  }, []);
-
-  const toggleAutoRotate = useCallback(() => {
-    setIsAutoRotating((prev) => !prev);
-  }, []);
-
-  const resetHeading = useCallback(() => {
-    setHeading(0);
-    setIsAutoRotating(false);
+  const startCompass = useCallback(async () => {
+    try {
+      // For iOS 13+
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        const permission = await (DeviceOrientationEvent as any).requestPermission();
+        if (permission === 'granted') {
+          setHasPermission(true);
+        } else {
+          setHasPermission(false);
+          alert('Izin sensor ditolak. Tidak dapat menggunakan kompas perangkat.');
+          return;
+        }
+      } else {
+        // Non iOS 13+ devices
+        setHasPermission(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setHasPermission(true); // Fallback for environments where requestPermission throws
+    }
   }, []);
 
   useEffect(() => {
-    if (isAutoRotating) {
-      autoRotateRef.current = setInterval(() => {
-        setHeading((prev) => normalizeAngle(prev + 1));
-      }, 50);
-    } else if (autoRotateRef.current) {
-      clearInterval(autoRotateRef.current);
-      autoRotateRef.current = null;
-    }
-    return () => {
-      if (autoRotateRef.current) clearInterval(autoRotateRef.current);
-    };
-  }, [isAutoRotating]);
+    if (hasPermission === true) {
+      const handleOrientation = (e: any) => {
+        let newHeading = 0;
+        if (e.webkitCompassHeading !== undefined) {
+          // iOS
+          newHeading = e.webkitCompassHeading;
+        } else if (e.alpha !== null) {
+          // Android
+          newHeading = 360 - e.alpha;
+        }
+        setHeading(newHeading);
+      };
 
+      window.addEventListener('deviceorientationabsolute', handleOrientation);
+      window.addEventListener('deviceorientation', handleOrientation);
+
+      return () => {
+        window.removeEventListener('deviceorientationabsolute', handleOrientation);
+        window.removeEventListener('deviceorientation', handleOrientation);
+      };
+    }
+  }, [hasPermission]);
   return (
     <div className="min-h-screen bg-bg-primary">
       <Header showBack={true} />
@@ -262,7 +279,9 @@ export default function Qibla() {
         >
           <Info size={16} className="shrink-0 text-primary" />
           <p className="text-xs text-text-secondary">
-            Putar perangkat Anda untuk menemukan arah Kiblat, atau gunakan tombol di bawah kompas.
+            {hasPermission === true
+              ? 'Putar perangkat Anda untuk menyesuaikan arah jarum ke logo Ka\'bah.'
+              : 'Aktifkan kompas untuk mulai mendeteksi arah kiblat.'}
           </p>
         </motion.div>
 
@@ -311,68 +330,29 @@ export default function Qibla() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-6 flex items-center justify-center gap-3"
+          className="mb-6 flex items-center justify-center"
         >
-          <button
-            onClick={() => adjustHeading(-15)}
-            className="pressable flex h-12 w-12 items-center justify-center rounded-xl bg-bg-card shadow-md active:shadow-sm"
-            aria-label="Putar kiri"
-          >
-            <ChevronLeft size={22} className="text-text-primary" />
-          </button>
-
-          <button
-            onClick={() => adjustHeading(-5)}
-            className="pressable flex h-11 w-11 items-center justify-center rounded-xl bg-bg-card shadow-sm"
-            aria-label="Putar kiri sedikit"
-          >
-            <ChevronLeft size={16} className="text-text-muted" />
-          </button>
-
-          <button
-            onClick={toggleAutoRotate}
-            className={`pressable flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors ${
-              isAutoRotating
-                ? 'bg-primary text-white shadow-gold'
-                : 'bg-bg-card text-primary'
-            }`}
-            aria-label={isAutoRotating ? 'Hentikan rotasi' : 'Rotasi otomatis'}
-          >
-            <Navigation
-              size={22}
-              className={isAutoRotating ? 'animate-spin' : ''}
-              style={isAutoRotating ? { animationDuration: '3s' } : undefined}
-            />
-          </button>
-
-          <button
-            onClick={() => adjustHeading(5)}
-            className="pressable flex h-11 w-11 items-center justify-center rounded-xl bg-bg-card shadow-sm"
-            aria-label="Putar kanan sedikit"
-          >
-            <ChevronRight size={16} className="text-text-muted" />
-          </button>
-
-          <button
-            onClick={() => adjustHeading(15)}
-            className="pressable flex h-12 w-12 items-center justify-center rounded-xl bg-bg-card shadow-md active:shadow-sm"
-            aria-label="Putar kanan"
-          >
-            <ChevronRight size={22} className="text-text-primary" />
-          </button>
+          {hasPermission !== true && (
+            <button
+              onClick={startCompass}
+              className="pressable flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-heading text-sm font-bold text-white shadow-lg"
+            >
+              <Navigation size={18} />
+              Mulai Kompas
+            </button>
+          )}
+          {hasPermission === true && (
+            <button
+              onClick={() => setHeading(0)}
+              className="pressable mt-4 flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-text-primary shadow-sm"
+            >
+              <RotateCcw size={16} className="text-text-muted" />
+              Kalibrasi Ulang
+            </button>
+          )}
         </motion.div>
 
-        {/* Reset button */}
-        <div className="mb-6 flex justify-center">
-          <button
-            onClick={resetHeading}
-            className="pressable flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs text-text-muted hover:text-text-secondary transition-colors"
-            aria-label="Reset heading"
-          >
-            <RotateCcw size={13} />
-            <span>Reset ke Utara</span>
-          </button>
-        </div>
+
 
         {/* Status indicator */}
         <motion.div

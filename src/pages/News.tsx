@@ -1,53 +1,59 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, PartyPopper, Megaphone, RefreshCw, Newspaper } from 'lucide-react';
+import { Calendar, PartyPopper, Megaphone, RefreshCw, Newspaper, BookOpen } from 'lucide-react';
 import Header from '@/components/layout/Header';
-import { newsArticles } from '@/data/mockData';
-import type { NewsArticle } from '@/data/types';
 
-type CategoryFilter = 'all' | 'event' | 'announcement' | 'update';
 
-interface FilterChip {
-  label: string;
-  value: CategoryFilter;
-}
 
-const filterChips: FilterChip[] = [
+const filterChips = [
   { label: 'Semua', value: 'all' },
-  { label: 'Kegiatan', value: 'event' },
-  { label: 'Pengumuman', value: 'announcement' },
-  { label: 'Update', value: 'update' },
+  { label: 'Kegiatan', value: 'Kegiatan' },
+  { label: 'Pengumuman', value: 'Pengumuman' },
+  { label: 'Kajian', value: 'Kajian' },
+  { label: 'Berita', value: 'Berita' },
 ];
 
-const categoryConfig: Record<
-  NewsArticle['category'],
-  { gradient: string; badge: string; icon: React.ReactNode }
-> = {
-  event: {
+const categoryConfig: Record<string, { gradient: string; badge: string; icon: React.ReactNode }> = {
+  'Kegiatan': {
     gradient: 'from-primary/80 to-primary-dark/90',
     badge: 'bg-primary/90 text-white',
     icon: <PartyPopper size={28} className="text-white/70" />,
   },
-  announcement: {
+  'Pengumuman': {
     gradient: 'from-info/80 to-blue-700/90',
     badge: 'bg-info/90 text-white',
     icon: <Megaphone size={28} className="text-white/70" />,
   },
-  update: {
+  'Kajian': {
+    gradient: 'from-purple-500/80 to-purple-700/90',
+    badge: 'bg-purple-500/90 text-white',
+    icon: <BookOpen size={28} className="text-white/70" />,
+  },
+  'Berita': {
     gradient: 'from-amber-500/80 to-amber-700/90',
     badge: 'bg-amber-500/90 text-white',
     icon: <RefreshCw size={28} className="text-white/70" />,
   },
 };
 
-const categoryLabel: Record<NewsArticle['category'], string> = {
-  event: 'Kegiatan',
-  announcement: 'Pengumuman',
-  update: 'Update',
-};
-
 export default function News() {
-  const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [newsArticles, setNewsArticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await fetch('/api/news');
+        if (res.ok) {
+          const data = await res.json();
+          setNewsArticles(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch news', err);
+      }
+    };
+    fetchNews();
+  }, []);
 
   const filteredArticles = useMemo(
     () =>
@@ -112,7 +118,7 @@ export default function News() {
           ) : (
             <div className="space-y-4">
               {filteredArticles.map((article, idx) => {
-                const config = categoryConfig[article.category];
+                const config = categoryConfig[article.category] || categoryConfig['Berita'];
                 return (
                   <motion.article
                     key={article.id}
@@ -133,7 +139,7 @@ export default function News() {
                       <span
                         className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${config.badge}`}
                       >
-                        {categoryLabel[article.category]}
+                        {article.category}
                       </span>
                     </div>
 
@@ -145,7 +151,9 @@ export default function News() {
 
                       <div className="mb-2 flex items-center gap-1.5">
                         <Calendar size={12} className="text-text-muted" />
-                        <span className="text-xs text-text-muted">{article.date}</span>
+                        <span className="text-xs text-text-muted">
+                          {article.date || new Date(article.created_at).toLocaleDateString('id-ID')}
+                        </span>
                       </div>
 
                       <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">

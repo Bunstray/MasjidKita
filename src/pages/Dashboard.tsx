@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { usePrayerTimes } from '@/hooks/usePrayerTimes';
-import { prayerSchedule, newsArticles, dailyVerses } from '@/data/mockData';
+import { prayerSchedule, dailyVerses } from '@/data/mockData';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,16 +36,11 @@ const quickActions = [
   { label: 'Berita', icon: Newspaper, to: '/news', color: 'bg-cyan-50', iconColor: 'text-cyan-600' },
 ];
 
-const categoryLabels: Record<string, string> = {
-  event: 'Kegiatan',
-  announcement: 'Pengumuman',
-  update: 'Info Terbaru',
-};
-
 const categoryColors: Record<string, string> = {
-  event: 'bg-primary/10 text-primary',
-  announcement: 'bg-accent/15 text-accent-dark',
-  update: 'bg-blue-50 text-blue-600',
+  'kegiatan': 'bg-primary/10 text-primary',
+  'pengumuman': 'bg-accent/15 text-accent-dark',
+  'kajian': 'bg-purple-100 text-purple-700',
+  'berita': 'bg-blue-50 text-blue-600',
 };
 
 function pad(n: number): string {
@@ -61,10 +56,26 @@ export default function Dashboard() {
     return (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % dailyVerses.length;
   });
 
+  const [news, setNews] = useState<any[]>([]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setVerseIndex((prev) => (prev + 1) % dailyVerses.length);
     }, 30000);
+
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(`/api/news`);
+        if (res.ok) {
+          const data = await res.json();
+          setNews(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch news', err);
+      }
+    };
+    fetchNews();
+
     return () => clearInterval(timer);
   }, []);
 
@@ -294,7 +305,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-3 flex gap-3 overflow-x-auto px-5 pb-2 scrollbar-none">
-            {newsArticles.slice(0, 4).map((article, index) => (
+            {news.slice(0, 4).map((article, index) => (
               <Link key={article.id} to="/news" className="pressable flex-shrink-0">
                 <motion.div
                   initial={{ opacity: 0, x: 30 }}
@@ -304,18 +315,21 @@ export default function Dashboard() {
                 >
                   <span
                     className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
-                      categoryColors[article.category]
+                      categoryColors[article.category.toLowerCase()] || 'bg-gray-100 text-gray-700'
                     }`}
                   >
-                    {categoryLabels[article.category]}
+                    {article.category}
                   </span>
                   <h4 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug text-text-primary">
                     {article.title}
                   </h4>
-                  <p className="mt-1 text-xs text-text-muted">{article.date}</p>
+                  <p className="mt-1 text-xs text-text-muted">{article.date || new Date(article.created_at).toLocaleDateString('id-ID')}</p>
                 </motion.div>
               </Link>
             ))}
+            {news.length === 0 && (
+              <p className="text-sm text-text-muted px-2 py-4">Belum ada berita terbaru.</p>
+            )}
           </div>
         </motion.section>
       </motion.div>
