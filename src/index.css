@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/* ============================================
+   MasjidKita Design System — Tailwind v4
+   ============================================ */
+
+@theme {
+  /* Primary palette — Emerald Green */
+  --color-primary: #0F7D5F;
+  --color-primary-dark: #0A5C45;
+  --color-primary-light: #E8F5F0;
+  --color-primary-50: #F0FAF6;
+  --color-primary-100: #D1F0E4;
+  --color-primary-200: #A3E1C9;
+  --color-primary-300: #5CC49E;
+  --color-primary-400: #2DA87A;
+  --color-primary-500: #0F7D5F;
+  --color-primary-600: #0A5C45;
+  --color-primary-700: #074530;
+  --color-primary-800: #052E20;
+  --color-primary-900: #031A12;
+
+  /* Accent — Champagne Gold */
+  --color-accent: #D4A853;
+  --color-accent-light: #F5ECD7;
+  --color-accent-dark: #B8922E;
+  --color-accent-50: #FBF7ED;
+  --color-accent-100: #F5ECD7;
+  --color-accent-200: #EBD9AF;
+  --color-accent-300: #E0C587;
+  --color-accent-400: #D4A853;
+  --color-accent-500: #C49A3D;
+  --color-accent-600: #B8922E;
+
+  /* Backgrounds */
+  --color-bg-primary: #FAFBF9;
+  --color-bg-card: #FFFFFF;
+  --color-bg-dark: #0D1F17;
+  --color-bg-elevated: #F5F7F4;
+
+  /* Text */
+  --color-text-primary: #1A2E23;
+  --color-text-secondary: #5A6E62;
+  --color-text-muted: #94A39B;
+  --color-text-on-dark: #F0F5F2;
+  --color-text-on-primary: #FFFFFF;
+
+  /* Semantic */
+  --color-danger: #E74C3C;
+  --color-success: #27AE60;
+  --color-warning: #F39C12;
+  --color-info: #3498DB;
+
+  /* Fonts */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-arabic: 'Amiri', serif;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(15, 125, 95, 0.06);
+  --shadow-md: 0 2px 12px rgba(15, 125, 95, 0.08);
+  --shadow-lg: 0 4px 24px rgba(15, 125, 95, 0.12);
+  --shadow-xl: 0 8px 40px rgba(15, 125, 95, 0.16);
+  --shadow-gold: 0 4px 20px rgba(212, 168, 83, 0.2);
+  --shadow-inner: inset 0 2px 4px rgba(15, 125, 95, 0.06);
+}
+
+/* ============================================
+   Base resets and global styles
+   ============================================ */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Arabic text styling */
+.arabic-text {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  text-align: right;
+  line-height: 2;
+  letter-spacing: 0;
+}
+
+/* ============================================
+   Scrollbar styling
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-200);
+  border-radius: var(--radius-full);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(15, 125, 95, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(15, 125, 95, 0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ============================================
+   Glassmorphism
+   ============================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.glass-dark {
+  background: rgba(13, 31, 23, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   Islamic geometric pattern overlay
+   ============================================ */
+
+.pattern-overlay {
+  position: relative;
+}
+
+.pattern-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   Safe areas for notched devices
+   ============================================ */
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ============================================
+   Skeleton loading
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-elevated) 25%,
+    rgba(15, 125, 95, 0.04) 50%,
+    var(--color-bg-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ============================================
+   Touch-friendly interactions
+   ============================================ */
+
+.tap-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pressable {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
