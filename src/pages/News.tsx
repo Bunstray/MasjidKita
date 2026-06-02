@@ -60,7 +60,7 @@ export default function News() {
       activeFilter === 'all'
         ? newsArticles
         : newsArticles.filter((a) => a.category === activeFilter),
-    [activeFilter]
+    [activeFilter, newsArticles]
   );
 
   return (
@@ -129,11 +129,25 @@ export default function News() {
                     transition={{ delay: idx * 0.08, duration: 0.35 }}
                     className="pressable overflow-hidden rounded-xl bg-white shadow-md"
                   >
-                    {/* Image placeholder with gradient */}
+                    {/* Image placeholder with gradient or actual image */}
                     <div
                       className={`relative flex h-40 items-center justify-center bg-gradient-to-br ${config.gradient}`}
                     >
-                      {config.icon}
+                      {article.image_url ? (
+                        <img
+                          src={article.image_url}
+                          alt={article.title}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            // Fallback to icon if image fails to load
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).parentElement?.classList.add('flex', 'items-center', 'justify-center');
+                            // We can't inject the icon directly via error handler easily, but hiding the broken image shows the gradient background.
+                          }}
+                        />
+                      ) : (
+                        config.icon
+                      )}
 
                       {/* Category badge */}
                       <span
@@ -157,7 +171,7 @@ export default function News() {
                       </div>
 
                       <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">
-                        {article.excerpt}
+                        {article.content || article.excerpt}
                       </p>
                     </div>
                   </motion.article>

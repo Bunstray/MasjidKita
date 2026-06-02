@@ -248,7 +248,12 @@ export default function Qibla() {
           // Android
           newHeading = 360 - e.alpha;
         }
-        setHeading(newHeading);
+        setHeading((prev) => {
+          let diff = newHeading - (prev % 360);
+          if (diff < -180) diff += 360;
+          if (diff > 180) diff -= 360;
+          return prev + diff;
+        });
       };
 
       window.addEventListener('deviceorientationabsolute', handleOrientation);
@@ -319,7 +324,7 @@ export default function Qibla() {
           {/* Current heading */}
           <div className="relative mt-4 text-center">
             <p className="font-heading text-3xl font-bold text-text-primary">
-              {Math.round(heading)}°
+              {Math.round(((heading % 360) + 360) % 360)}°
             </p>
             <p className="mt-0.5 text-xs text-text-muted">Heading Saat Ini</p>
           </div>
