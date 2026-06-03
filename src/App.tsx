@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { BookmarkProvider } from '@/context/BookmarkContext';
 import { AuthProvider } from '@/context/AuthContext';
 import AppShell from '@/components/layout/AppShell';
@@ -57,6 +58,7 @@ export default function App() {
               <Route path="news" element={<AdminNews />} />
             </Route>
           </Routes>
+          <Analytics />
         </BrowserRouter>
       </BookmarkProvider>
     </AuthProvider>
