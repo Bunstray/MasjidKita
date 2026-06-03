@@ -40,7 +40,7 @@ Sistem ini telah dikonfigurasi agar **Frontend dan Backend dapat berjalan bersam
 4. **Deploy**:
    - Klik tombol **Deploy**.
    - Tunggu proses _build_ selesai. Vercel akan membaca file `vercel.json` secara otomatis, mengubah API backend (Express) menjadi Serverless Functions, dan me-render frontend Vite.
-5. **Update VITE_API_URL (Sangat Penting)**:
+5. **Update VITE_API_URL**:
    - Setelah deploy selesai, Vercel akan memberikan domain publik (contoh: `https://masjidkita-app.vercel.app`).
    - Pergi ke menu **Settings > Environment Variables** di dashboard project Vercel Anda.
    - Tambahkan variabel baru: `VITE_API_URL` dan isi dengan domain publik aplikasi Vercel Anda tersebut (contoh: `https://masjidkita-app.vercel.app`).
