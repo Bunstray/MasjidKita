@@ -13,6 +13,7 @@ import News from '@/pages/News';
 import NewsDetail from '@/pages/NewsDetail';
 import Dua from '@/pages/Dua';
 import More from '@/pages/More';
+import EKupon from '@/pages/EKupon';
 
 // Auth & User Pages
 import Login from '@/pages/Login';
@@ -46,14 +47,7 @@ export default function App() {
               <Route path="/dua" element={<Dua />} />
               <Route path="/more" element={<More />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/e-coupons" element={
-                <div>
-                  <div className="p-5">E-Kupon Management Coming Soon...</div>
-                  {/* <button onClick={() => navigate(-1)} className="text-primary hover:underline">
-                    ← Kembali
-                  </button> */}
-                </div>
-                } />
+              <Route path="/e-coupons" element={<EKupon />} />
             </Route>
 
             {/* Auth Routes without bottom nav */}
@@ -65,7 +59,7 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="infaq" element={<AdminInfaq />} />
               <Route path="news" element={<AdminNews />} />
-              <Route path="e-coupons" element={<div className="p-5">E-Kupon Management Coming Soon...</div>} />
+              <Route path="e-coupons" element={<EKupon />} />
             </Route>
           </Routes>
         </BrowserRouter>
