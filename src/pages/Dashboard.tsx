@@ -189,8 +189,8 @@ export default function Dashboard() {
                   />
                   <defs>
                     <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#0F7D5F" />
-                      <stop offset="100%" stopColor="#D4A853" />
+                      <stop offset="0%" stopColor="#884630" />
+                      <stop offset="100%" stopColor="#F8D64F" />
                     </linearGradient>
                   </defs>
                 </svg>
