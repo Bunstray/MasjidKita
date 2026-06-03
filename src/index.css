@@ -5,7 +5,7 @@
    ============================================ */
 
 @theme {
-  /* Primary palette — Emerald Green */
+  /* Primary palette — Coffee */
   --color-primary: #884630;
   --color-primary-dark: #5B2F20;
   --color-primary-light: #F5ECE8;
@@ -20,7 +20,7 @@
   --color-primary-800: #2E1505;
   --color-primary-900: #1A0C03;
 
-  /* Accent — Champagne Gold */
+  /* Accent palette — Yellow */
   --color-accent: #F8D64F;
   --color-accent-light: #F5EFD7;
   --color-accent-dark: #B89C2E;

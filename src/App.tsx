@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { BookmarkProvider } from '@/context/BookmarkContext';
 import { AuthProvider } from '@/context/AuthContext';
 import AppShell from '@/components/layout/AppShell';
@@ -25,6 +25,8 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminInfaq from '@/pages/admin/AdminInfaq';
 import AdminNews from '@/pages/admin/AdminNews';
 
+// const navigate = useNavigate();
+
 export default function App() {
   return (
     <AuthProvider>
@@ -44,6 +46,14 @@ export default function App() {
               <Route path="/dua" element={<Dua />} />
               <Route path="/more" element={<More />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/e-coupons" element={
+                <div>
+                  <div className="p-5">E-Kupon Management Coming Soon...</div>
+                  {/* <button onClick={() => navigate(-1)} className="text-primary hover:underline">
+                    ← Kembali
+                  </button> */}
+                </div>
+                } />
             </Route>
 
             {/* Auth Routes without bottom nav */}
@@ -55,6 +65,7 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="infaq" element={<AdminInfaq />} />
               <Route path="news" element={<AdminNews />} />
+              <Route path="e-coupons" element={<div className="p-5">E-Kupon Management Coming Soon...</div>} />
             </Route>
           </Routes>
         </BrowserRouter>

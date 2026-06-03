@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Compass, BookOpen, Newspaper, ChevronRight } from 'lucide-react';
+import { Compass, BookOpen, Newspaper, ChevronRight, Ticket } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 interface MenuItem {
@@ -33,6 +33,13 @@ const menuItems: MenuItem[] = [
     color: 'text-info',
     bgColor: 'bg-blue-50',
   },
+  {
+    label: 'E-Kupon',
+    path: '/e-coupons',
+    icon: <Ticket size={22} />,
+    color: 'text-warning',
+    bgColor: 'bg-warning-50',
+  }
 ];
 
 const containerVariants = {
