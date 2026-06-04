@@ -25,6 +25,7 @@ import AdminLayout from '@/components/layout/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminInfaq from '@/pages/admin/AdminInfaq';
 import AdminNews from '@/pages/admin/AdminNews';
+import AdminEKupon from './pages/admin/AdminEKupon';
 
 // const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="infaq" element={<AdminInfaq />} />
               <Route path="news" element={<AdminNews />} />
-              <Route path="e-coupons" element={<EKupon />} />
+              <Route path="e-coupons" element={<AdminEKupon />} />
             </Route>
           </Routes>
         </BrowserRouter>
