@@ -1,5 +1,5 @@
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Receipt, FileText, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Receipt, FileText, ArrowLeft, Ticket } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminLayout() {
@@ -16,6 +16,8 @@ export default function AdminLayout() {
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/infaq', label: 'Infaq', icon: Receipt },
     { path: '/admin/news', label: 'Berita', icon: FileText },
+    { path: '/admin/e-coupons', label: 'E-Kupon', icon: Ticket },
+    // { path: '/admin/settings', label: 'Pengaturan', icon: FileText }
   ];
 
   return (

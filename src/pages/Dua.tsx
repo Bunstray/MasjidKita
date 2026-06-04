@@ -83,7 +83,7 @@ export default function Dua() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
-      <Header />
+      <Header showBack={true} />
 
       <div className="mx-auto w-full max-w-lg flex-1 px-4 pt-3 pb-24">
         {/* Tab Switcher */}

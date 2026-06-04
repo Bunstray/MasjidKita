@@ -13,6 +13,7 @@ import News from '@/pages/News';
 import NewsDetail from '@/pages/NewsDetail';
 import Dua from '@/pages/Dua';
 import More from '@/pages/More';
+import EKupon from '@/pages/EKupon';
 
 // Auth & User Pages
 import Login from '@/pages/Login';
@@ -24,6 +25,9 @@ import AdminLayout from '@/components/layout/AdminLayout';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminInfaq from '@/pages/admin/AdminInfaq';
 import AdminNews from '@/pages/admin/AdminNews';
+import AdminEKupon from './pages/admin/AdminEKupon';
+
+// const navigate = useNavigate();
 
 export default function App() {
   return (
@@ -44,6 +48,7 @@ export default function App() {
               <Route path="/dua" element={<Dua />} />
               <Route path="/more" element={<More />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/e-coupons" element={<EKupon />} />
             </Route>
 
             {/* Auth Routes without bottom nav */}
@@ -55,6 +60,7 @@ export default function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="infaq" element={<AdminInfaq />} />
               <Route path="news" element={<AdminNews />} />
+              <Route path="e-coupons" element={<AdminEKupon />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -66,7 +66,7 @@ export default function News() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
-      <Header />
+      <Header showBack={true} />
 
       <motion.main
         initial={{ opacity: 0, y: 20 }}

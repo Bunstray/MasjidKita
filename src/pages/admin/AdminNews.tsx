@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Plus, Trash2, Loader2, Image as ImageIcon } from 'lucide-react';
+import { FileText, Plus, Trash2, Loader2, Image as ImageIcon, Edit } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { formatDate } from '@/services/infaqReceipt'; // reuse for consistent dates
 
@@ -208,13 +208,22 @@ export default function AdminNews() {
               
               <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
                 <span className="text-[10px] text-text-muted">Oleh: {item.author_name}</span>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="pressable rounded bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition-colors"
-                  title="Hapus berita"
-                >
-                  <Trash2 size={14} />
-                </button>
+                <div>
+                  <button
+                    // onClick={() => handleEdit(item.id)}
+                    className="pressable rounded bg-yellow-50 p-1.5 text-yellow-600 hover:bg-yellow-100 transition-colors"
+                    title="Edit berita"
+                  >
+                    <Edit size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="pressable rounded bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition-colors"
+                    title="Hapus berita"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -18,6 +18,7 @@ const pageTitles: Record<string, string> = {
   '/news': 'Berita & Pengumuman',
   '/dua': "Kumpulan Do'a",
   '/more': 'Lainnya',
+  '/e-coupons': 'E-Kupon',
 };
 
 export default function Header({ title, showBack = false, rightAction }: HeaderProps) {

@@ -5,32 +5,32 @@
    ============================================ */
 
 @theme {
-  /* Primary palette — Emerald Green */
-  --color-primary: #0F7D5F;
-  --color-primary-dark: #0A5C45;
-  --color-primary-light: #E8F5F0;
-  --color-primary-50: #F0FAF6;
-  --color-primary-100: #D1F0E4;
-  --color-primary-200: #A3E1C9;
-  --color-primary-300: #5CC49E;
-  --color-primary-400: #2DA87A;
-  --color-primary-500: #0F7D5F;
-  --color-primary-600: #0A5C45;
-  --color-primary-700: #074530;
-  --color-primary-800: #052E20;
-  --color-primary-900: #031A12;
+  /* Primary palette — Coffee */
+  --color-primary: #884630;
+  --color-primary-dark: #5B2F20;
+  --color-primary-light: #F5ECE8;
+  --color-primary-50: #FAF3F0;
+  --color-primary-100: #F0DAD1;
+  --color-primary-200: #E1B6A3;
+  --color-primary-300: #C47B5C;
+  --color-primary-400: #A8522D;
+  --color-primary-500: #7D340F;
+  --color-primary-600: #5C2B0A;
+  --color-primary-700: #452007;
+  --color-primary-800: #2E1505;
+  --color-primary-900: #1A0C03;
 
-  /* Accent — Champagne Gold */
-  --color-accent: #D4A853;
-  --color-accent-light: #F5ECD7;
-  --color-accent-dark: #B8922E;
-  --color-accent-50: #FBF7ED;
+  /* Accent palette — Yellow */
+  --color-accent: #F8D64F;
+  --color-accent-light: #F5EFD7;
+  --color-accent-dark: #B89C2E;
+  --color-accent-50: #FBF8ED;
   --color-accent-100: #F5ECD7;
-  --color-accent-200: #EBD9AF;
-  --color-accent-300: #E0C587;
-  --color-accent-400: #D4A853;
-  --color-accent-500: #C49A3D;
-  --color-accent-600: #B8922E;
+  --color-accent-200: #EBDFAF;
+  --color-accent-300: #E0CE87;
+  --color-accent-400: #D4BA53;
+  --color-accent-500: #C4A93D;
+  --color-accent-600: #B89C2E;
 
   /* Backgrounds */
   --color-bg-primary: #FAFBF9;
