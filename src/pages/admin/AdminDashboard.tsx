@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Receipt, FileText, Loader2, TrendingUp } from 'lucide-react';
+import { Receipt, FileText, Loader2, TrendingUp, Ticket } from 'lucide-react';
 import { formatRupiah } from '@/services/infaqReceipt';
 import { useAuth } from '@/context/AuthContext';
 
@@ -97,6 +97,17 @@ export default function AdminDashboard() {
           </div>
           <p className="text-sm font-medium text-text-secondary">Berita & Pengumuman</p>
           <p className="mt-1 font-heading text-3xl font-bold text-text-primary">{stats.newsCount}</p>
+        </div>
+
+        {/* Total E-Kupon Card */}
+        <div className="rounded-2xl border border-bg-elevated bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="rounded-xl bg-primary-50 p-2">
+              <Ticket size={24} className="text-primary" />
+            </div>
+          </div>
+          <p className="text-sm font-medium text-text-secondary">Total E-Kupon</p>
+          <p className="mt-1 font-heading text-3xl font-bold text-text-primary">0</p>
         </div>
       </div>
     </div>

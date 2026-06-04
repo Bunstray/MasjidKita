@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, ImageIcon, Loader2, Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { motion } from 'framer-motion';
 
 interface CoupounItems {
@@ -62,6 +62,7 @@ export default function AdminEKupon() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
+                placeholder="Jumat Berkah"
                 className="w-full rounded-xl border border-gray-200 bg-bg-primary px-4 py-2.5 text-sm outline-none focus:border-primary"
               />
             </div>
@@ -80,7 +81,6 @@ export default function AdminEKupon() {
               <div className="space-y-1.5 flex-1">
                 <label className="text-xs font-semibold text-text-secondary">Berlaku hingga</label>
                 <div className="relative">
-                  <Calendar size={16} className="absolute left-3 top-3 text-text-muted" />
                   <input
                     type="datetime-local"
                     value={validUntil}

@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Header from "@/components/layout/Header";
-import ScanQR from "@/components/layout/ScanQR";
+// import ScanQR from "@/components/layout/ScanQR";
 
 type TabType = 'scan qr' | 'tersimpan';
 
-interface CoupounItems {
-    id: string;
-    code: string;
-    description: string;
-    coupoun_amount: number;
-    valid_until: string;
-}
+// interface CoupounItems {
+//     id: string;
+//     code: string;
+//     description: string;
+//     coupoun_amount: number;
+//     valid_until: string;
+// }
 
 export default function EKupon() {
-  const readerRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('scan qr');
 
   return (
@@ -49,7 +48,7 @@ export default function EKupon() {
           {/* {activeTab === 'scan qr' && (
             <ScanQR />
           )} */}
-          
+
           <p className="text-lg text-gray-600">Halaman E-Kupon sedang dalam pengembangan.</p>
         </div>
     </div> 
