@@ -1,28 +1,34 @@
 import { useState } from "react";
-import { Edit, Loader2, Plus, QrCode, Ticket, Trash2 } from "lucide-react";
+import { Edit, Loader2, Plus, QrCode, Ticket, Trash2, X } from "lucide-react";
 import { motion } from "framer-motion";
+import GenerateQR from "@/components/layout/GenerateQR";
 
 interface CoupounItems {
   id: string;
+  code: string;
   description: string;
   coupoun_amount: number;
   valid_until: string;
 }
 
 export default function AdminEKupon() {
+  const [showQR, setShowQR] = useState(false);
+  const [qrData, setQrData] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [coupouns, setCoupouns] = useState<CoupounItems[]>([
     {
       id: "1",
+      code: "JUMATBERKAH01",
       description: "Jumat Berkah ",
       coupoun_amount: 2000,
-      valid_until: "2024-12-31T23:59",
+      valid_until: "2026-06-06T14:00",
     },
     {
       id: "2",
+      code: "JUMATBERKAH02",
       description: "Jumat Berkah ",
-      coupoun_amount: 2000,
-      valid_until: "2024-12-31T23:59",
+      coupoun_amount: 1500,
+      valid_until: "2026-06-13T14:00",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -97,7 +103,6 @@ export default function AdminEKupon() {
                 <input
                   type="number"
                   value={amount}
-                  o
                   onChange={(e) => setAmount(parseInt(e.target.value))}
                   required
                   className="w-full rounded-xl border border-gray-200 bg-bg-primary px-4 py-2.5 text-sm outline-none focus:border-primary"
@@ -162,7 +167,14 @@ export default function AdminEKupon() {
                 </button>
               </div>
             </div>
-            <button className="pressable rounded-xl bg-primary font-heading text-sm font-bold text-white transition-opacity disabled:opacity-50">
+            <button
+              onClick={() => {
+                setQrData(item.code);
+                setShowQR(true);
+              }}
+              className="pressable rounded-xl bg-primary font-heading text-sm font-bold text-white transition-opacity disabled:opacity-50"
+              title="Generate QR Code"
+            >
               <div className="flex flex-col items-center justify-center px-4 py-2">
                 <QrCode size={40} />
                 Generate <br></br> QR Code
@@ -172,45 +184,31 @@ export default function AdminEKupon() {
         ))}
       </div>
 
-      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {news.map((item) => (
-          <div key={item.id} className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm border border-bg-elevated">
-            {item.image_url ? (
-              <img src={item.image_url} alt={item.title} className="h-40 w-full object-cover" />
-            ) : (
-              <div className="flex h-32 w-full items-center justify-center bg-primary-50">
-                <FileText size={40} className="text-primary/20" />
-              </div>
-            )}
-            <div className="flex flex-1 flex-col p-4">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="rounded bg-primary-50 px-2 py-0.5 text-[10px] font-bold text-primary">
-                  {item.category}
-                </span>
-                <span className="text-[10px] text-text-muted">{formatDate(item.created_at)}</span>
-              </div>
-              <h3 className="font-heading font-bold text-text-primary line-clamp-2">{item.title}</h3>
-              <p className="mt-1 text-xs text-text-secondary line-clamp-3 flex-1">{item.content}</p>
-              
-              <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-                <span className="text-[10px] text-text-muted">Oleh: {item.author_name}</span>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="pressable rounded bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition-colors"
-                  title="Hapus berita"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
       <div className="flex flex-col items-center justify-center">
         <p className="text-lg text-gray-600 ">
           Halaman E-Kupon sedang dalam pengembangan.
         </p>
       </div>
+
+      {showQR && qrData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-md rounded-2xl bg-white p-4">
+            <div className="flex justify-end items-center mb-3">
+              <button
+                onClick={() => setShowQR(false)}
+                className="rounded p-1 text-sm text-text-secondary"
+                aria-label="Close QR dialog"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <GenerateQR />
+            <p className="mt-3 text-center text-sm text-text-secondary">{qrData}</p>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }
