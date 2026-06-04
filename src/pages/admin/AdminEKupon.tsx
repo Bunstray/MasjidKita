@@ -1,40 +1,54 @@
 import { useState } from "react";
-import { Loader2, Plus } from "lucide-react";
-import { motion } from 'framer-motion';
+import { Edit, Loader2, Plus, QrCode, Ticket, Trash2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface CoupounItems {
-    id: string;
-    code: string;
-    description: string;
-    coupoun_amount: number;
-    valid_until: string;
+  id: string;
+  description: string;
+  coupoun_amount: number;
+  valid_until: string;
 }
 
 export default function AdminEKupon() {
-    const [showForm, setShowForm] = useState(false);
-    const [coupouns, setCoupouns] = useState<CoupounItems[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [coupouns, setCoupouns] = useState<CoupounItems[]>([
+    {
+      id: "1",
+      description: "Jumat Berkah ",
+      coupoun_amount: 2000,
+      valid_until: "2024-12-31T23:59",
+    },
+    {
+      id: "2",
+      description: "Jumat Berkah ",
+      coupoun_amount: 2000,
+      valid_until: "2024-12-31T23:59",
+    },
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-    // Coupoun Form State
-    const [description, setDescription] = useState('');
-    const [amount, setAmount] = useState(0);
-    const [validUntil, setValidUntil] = useState('');
+  // Coupoun Form State
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [validUntil, setValidUntil] = useState("");
 
-    if (loading) {
-        return (
-        <div className="flex h-64 items-center justify-center">
-            <Loader2 size={32} className="animate-spin text-primary" />
-        </div>
-        );
-    }
-
+  if (loading) {
     return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-2xl font-bold text-text-primary">E-Kupon</h2>
+          <h2 className="font-heading text-2xl font-bold text-text-primary">
+            E-Kupon
+          </h2>
           <p className="text-sm text-text-muted">Kelola E-Kupon anda disini</p>
         </div>
         <button
@@ -42,21 +56,29 @@ export default function AdminEKupon() {
           className="pressable flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-dark"
         >
           <Plus size={18} />
-          {showForm ? 'Batal' : 'Buat E-Kupon'}
+          {showForm ? "Batal" : "Buat E-Kupon"}
         </button>
       </div>
 
       {showForm && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
+          animate={{ opacity: 1, height: "auto" }}
           className="overflow-hidden"
         >
-          <form /*onSubmit={handleSubmit}*/ className="rounded-2xl bg-white p-5 shadow-sm border border-bg-elevated space-y-4">
-            {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</div>}
-            
+          <form
+            /*onSubmit={handleSubmit}*/ className="rounded-2xl bg-white p-5 shadow-sm border border-bg-elevated space-y-4"
+          >
+            {error && (
+              <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
+
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-secondary">Deskripsi Kupon</label>
+              <label className="text-xs font-semibold text-text-secondary">
+                Deskripsi Kupon
+              </label>
               <input
                 type="text"
                 value={description}
@@ -69,17 +91,22 @@ export default function AdminEKupon() {
 
             <div className="flex gap-4">
               <div className="space-y-1.5 flex-1">
-                <label className="text-xs font-semibold text-text-secondary">Jumlah</label>
+                <label className="text-xs font-semibold text-text-secondary">
+                  Jumlah
+                </label>
                 <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(parseInt(e.target.value))}
-                    required
-                    className="w-full rounded-xl border border-gray-200 bg-bg-primary px-4 py-2.5 text-sm outline-none focus:border-primary"
+                  type="number"
+                  value={amount}
+                  o
+                  onChange={(e) => setAmount(parseInt(e.target.value))}
+                  required
+                  className="w-full rounded-xl border border-gray-200 bg-bg-primary px-4 py-2.5 text-sm outline-none focus:border-primary"
                 />
               </div>
               <div className="space-y-1.5 flex-1">
-                <label className="text-xs font-semibold text-text-secondary">Berlaku hingga</label>
+                <label className="text-xs font-semibold text-text-secondary">
+                  Berlaku hingga
+                </label>
                 <div className="relative">
                   <input
                     type="datetime-local"
@@ -96,11 +123,54 @@ export default function AdminEKupon() {
               disabled={isSubmitting}
               className="pressable w-full rounded-xl bg-primary py-3 font-heading text-sm font-bold text-white transition-opacity disabled:opacity-50"
             >
-              {isSubmitting ? 'Menyimpan...' : 'Simpan E-Kupon'}
+              {isSubmitting ? "Menyimpan..." : "Simpan E-Kupon"}
             </button>
           </form>
         </motion.div>
       )}
+
+      {/* List of e-coupouns */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {coupouns.map((item) => (
+          <div
+            key={item.id}
+            className="flex justify-between rounded-2xl bg-white shadow-sm border border-bg-elevated p-4 md:flex-col"
+          >
+            <div className="mb-3 flex flex-col justify-center rounded-xl">
+              <Ticket size={40} className="mb-3 text-primary" />
+              <h3 className="font-heading font-bold text-text-primary">
+                {item.description}
+              </h3>
+              <p className="text-sm text-text-secondary">
+                Jumlah: {item.coupoun_amount}
+              </p>
+              <p className="text-sm text-text-secondary">
+                Berlaku hingga: {new Date(item.valid_until).toLocaleString()}
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  className="pressable rounded bg-yellow-50 p-1.5 text-yellow-600 hover:bg-yellow-100 transition-colors"
+                  title="Edit kupon"
+                >
+                  <Edit size={20} />
+                </button>
+                <button
+                  className="pressable rounded bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition-colors"
+                  title="Hapus kupon"
+                >
+                  <Trash2 size={20} />
+                </button>
+              </div>
+            </div>
+            <button className="pressable rounded-xl bg-primary font-heading text-sm font-bold text-white transition-opacity disabled:opacity-50">
+              <div className="flex flex-col items-center justify-center px-4 py-2">
+                <QrCode size={40} />
+                Generate <br></br> QR Code
+              </div>
+            </button>
+          </div>
+        ))}
+      </div>
 
       {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {news.map((item) => (
@@ -136,10 +206,11 @@ export default function AdminEKupon() {
           </div>
         ))}
       </div> */}
-        <div className="flex flex-col items-center justify-center">
-            <p className="text-lg text-gray-600 ">Halaman E-Kupon sedang dalam pengembangan.</p>
-        </div>
-    </div> 
-
-    )
+      <div className="flex flex-col items-center justify-center">
+        <p className="text-lg text-gray-600 ">
+          Halaman E-Kupon sedang dalam pengembangan.
+        </p>
+      </div>
+    </div>
+  );
 }
