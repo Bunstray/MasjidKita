@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Edit, Loader2, Plus, QrCode, Ticket, Trash2, X } from "lucide-react";
 import { motion } from "framer-motion";
 import GenerateQR from "@/components/layout/GenerateQR";
@@ -40,6 +40,34 @@ export default function AdminEKupon() {
   const [amount, setAmount] = useState(0);
   const [validUntil, setValidUntil] = useState("");
 
+  const fetchCoupouns = async () => {
+    try {
+      console.log();
+      setCoupouns(coupouns);
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchCoupouns();
+  }, []);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      console.log();
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -73,7 +101,7 @@ export default function AdminEKupon() {
           className="overflow-hidden"
         >
           <form
-            /*onSubmit={handleSubmit}*/ className="rounded-2xl bg-white p-5 shadow-sm border border-bg-elevated space-y-4"
+            onSubmit={handleSubmit} className="rounded-2xl bg-white p-5 shadow-sm border border-bg-elevated space-y-4"
           >
             {error && (
               <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
