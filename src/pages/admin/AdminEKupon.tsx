@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 interface CoupounItems {
     id: string;
+    code: string;
     description: string;
     coupoun_amount: number;
     valid_until: string;
@@ -55,7 +56,7 @@ export default function AdminEKupon() {
             {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</div>}
             
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-text-secondary">E-Kupon</label>
+              <label className="text-xs font-semibold text-text-secondary">Deskripsi Kupon</label>
               <input
                 type="text"
                 value={description}
@@ -135,6 +136,10 @@ export default function AdminEKupon() {
           </div>
         ))}
       </div> */}
-    </div>
+        <div className="flex flex-col items-center justify-center">
+            <p className="text-lg text-gray-600 ">Halaman E-Kupon sedang dalam pengembangan.</p>
+        </div>
+    </div> 
+
     )
 }
