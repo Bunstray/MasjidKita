@@ -10,6 +10,7 @@ export default function AdminDashboard() {
     totalInfaq: 0,
     infaqCount: 0,
     newsCount: 0,
+    couponCount: 0,
   });
 
   useEffect(() => {
@@ -35,10 +36,21 @@ export default function AdminDashboard() {
           newsLen = data.data.length;
         }
 
+        // Fetch coupon stats
+        const resCoupons = await fetch(`/api/admin/coupons`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        let couponLen = 0;
+        if (resCoupons.ok) {
+          const data = await resCoupons.json();
+          couponLen = data.data.length;
+        }
+
         setStats({
           totalInfaq: infaqTotal,
           infaqCount: infaqLen,
           newsCount: newsLen,
+          couponCount: couponLen,
         });
       } catch (err) {
         console.error('Failed to fetch admin stats', err);
@@ -107,7 +119,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <p className="text-sm font-medium text-text-secondary">Total E-Kupon</p>
-          <p className="mt-1 font-heading text-3xl font-bold text-text-primary">0</p>
+          <p className="mt-1 font-heading text-3xl font-bold text-text-primary">{stats.couponCount}</p>
         </div>
       </div>
     </div>

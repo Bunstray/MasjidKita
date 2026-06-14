@@ -452,6 +452,233 @@ app.delete('/api/admin/news/:id', authMiddleware(true), async (req, res) => {
 });
 
 // ═══════════════════════════════════════════
+// COUPONS: Admin — Create coupon event + codes
+// ═══════════════════════════════════════════
+app.post('/api/admin/coupons', authMiddleware(true), async (req, res) => {
+  try {
+    const { description, quantity, validUntil } = req.body;
+    const cleanDesc = sanitize(description, 200);
+    const numQty = Number(quantity);
+
+    if (!cleanDesc || cleanDesc.length < 3) {
+      return res.status(400).json({ error: 'Deskripsi minimal 3 karakter' });
+    }
+    if (!Number.isInteger(numQty) || numQty < 1 || numQty > 500) {
+      return res.status(400).json({ error: 'Jumlah kupon harus antara 1 dan 500' });
+    }
+    if (!validUntil) {
+      return res.status(400).json({ error: 'Tanggal berlaku diperlukan' });
+    }
+
+    // Create the event
+    const eventResult = await pool.query(
+      `INSERT INTO coupon_events (description, total_quantity, valid_until, created_by)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, description, total_quantity, valid_until, created_at`,
+      [cleanDesc, numQty, new Date(validUntil), req.user.id]
+    );
+    const event = eventResult.rows[0];
+
+    // Generate unique coupon codes
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const codes = [];
+    for (let i = 0; i < numQty; i++) {
+      let code;
+      let attempts = 0;
+      do {
+        let random = '';
+        for (let j = 0; j < 5; j++) random += chars.charAt(Math.floor(Math.random() * chars.length));
+        code = `MK-${cleanDesc.substring(0, 5).toUpperCase().replace(/\s/g, '')}-${random}`;
+        attempts++;
+      } while (codes.includes(code) && attempts < 10);
+      codes.push(code);
+    }
+
+    // Batch insert coupons
+    const values = codes.map((code, i) => `($${i * 2 + 1}, $${i * 2 + 2})`);
+    const params = codes.flatMap(code => [event.id, code]);
+    await pool.query(
+      `INSERT INTO coupons (event_id, code) VALUES ${values.join(', ')}`,
+      params
+    );
+
+    res.status(201).json({
+      success: true,
+      data: { ...event, total_quantity: Number(event.total_quantity), codes },
+    });
+  } catch (err) {
+    console.error('POST /api/admin/coupons error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Admin — List all events with stats
+// ═══════════════════════════════════════════
+app.get('/api/admin/coupons', authMiddleware(true), async (_req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT e.id, e.description, e.total_quantity, e.valid_until, e.created_at,
+              COUNT(c.id) AS total_codes,
+              COUNT(c.id) FILTER (WHERE c.is_claimed = true) AS claimed_count
+       FROM coupon_events e
+       LEFT JOIN coupons c ON c.event_id = e.id
+       GROUP BY e.id
+       ORDER BY e.created_at DESC`
+    );
+    const data = result.rows.map(r => ({
+      id: r.id, description: r.description,
+      totalQuantity: Number(r.total_quantity),
+      validUntil: r.valid_until, createdAt: r.created_at,
+      totalCodes: Number(r.total_codes),
+      claimedCount: Number(r.claimed_count),
+    }));
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error('GET /api/admin/coupons error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Admin — Get event details + codes
+// ═══════════════════════════════════════════
+app.get('/api/admin/coupons/:eventId', authMiddleware(true), async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+    const eventResult = await pool.query('SELECT * FROM coupon_events WHERE id = $1', [eventId]);
+    if (eventResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Event tidak ditemukan' });
+    }
+    const event = eventResult.rows[0];
+    const couponsResult = await pool.query(
+      'SELECT id, code, is_claimed, claimed_at, claimed_by FROM coupons WHERE event_id = $1 ORDER BY id',
+      [eventId]
+    );
+    res.json({
+      success: true,
+      data: {
+        id: event.id, description: event.description,
+        totalQuantity: Number(event.total_quantity),
+        validUntil: event.valid_until, createdAt: event.created_at,
+        coupons: couponsResult.rows.map(c => ({
+          id: c.id, code: c.code, isClaimed: c.is_claimed,
+          claimedAt: c.claimed_at, claimedBy: c.claimed_by,
+        })),
+      },
+    });
+  } catch (err) {
+    console.error('GET /api/admin/coupons/:id error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Admin — Delete event + its coupons
+// ═══════════════════════════════════════════
+app.delete('/api/admin/coupons/:eventId', authMiddleware(true), async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+    await pool.query('DELETE FROM coupons WHERE event_id = $1', [eventId]);
+    await pool.query('DELETE FROM coupon_events WHERE id = $1', [eventId]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('DELETE /api/admin/coupons error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Public — Claim a coupon by code
+// ═══════════════════════════════════════════
+app.post('/api/coupons/claim', async (req, res) => {
+  try {
+    const { code } = req.body;
+    const cleanCode = sanitize(code, 50).toUpperCase();
+    if (!cleanCode) return res.status(400).json({ error: 'Kode kupon diperlukan' });
+
+    // Find the coupon + its event
+    const result = await pool.query(
+      `SELECT c.id, c.code, c.is_claimed, c.claimed_at,
+              e.description, e.valid_until
+       FROM coupons c
+       JOIN coupon_events e ON e.id = c.event_id
+       WHERE c.code = $1`,
+      [cleanCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Kode kupon tidak ditemukan' });
+    }
+
+    const coupon = result.rows[0];
+
+    if (coupon.is_claimed) {
+      return res.status(409).json({ error: 'Kupon sudah diklaim', data: {
+        code: coupon.code, description: coupon.description,
+        claimedAt: coupon.claimed_at,
+      }});
+    }
+
+    if (new Date(coupon.valid_until) < new Date()) {
+      return res.status(410).json({ error: 'Kupon sudah kadaluarsa' });
+    }
+
+    // Mark as claimed
+    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+    const ipHash = hashIP(ip);
+    await pool.query(
+      `UPDATE coupons SET is_claimed = true, claimed_at = NOW(), claimed_by = $1 WHERE id = $2`,
+      [ipHash, coupon.id]
+    );
+
+    res.json({
+      success: true,
+      data: {
+        code: coupon.code, description: coupon.description,
+        validUntil: coupon.valid_until, claimedAt: new Date().toISOString(),
+      },
+    });
+  } catch (err) {
+    console.error('POST /api/coupons/claim error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Public — Verify coupon status
+// ═══════════════════════════════════════════
+app.get('/api/coupons/verify/:code', async (req, res) => {
+  try {
+    const cleanCode = sanitize(req.params.code, 50).toUpperCase();
+    const result = await pool.query(
+      `SELECT c.code, c.is_claimed, c.claimed_at,
+              e.description, e.valid_until
+       FROM coupons c
+       JOIN coupon_events e ON e.id = c.event_id
+       WHERE c.code = $1`,
+      [cleanCode]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Kode kupon tidak ditemukan' });
+    }
+    const c = result.rows[0];
+    const expired = new Date(c.valid_until) < new Date();
+    res.json({
+      success: true,
+      data: {
+        code: c.code, description: c.description,
+        isClaimed: c.is_claimed, claimedAt: c.claimed_at,
+        validUntil: c.valid_until, isExpired: expired,
+      },
+    });
+  } catch (err) {
+    console.error('GET /api/coupons/verify error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
 // 404 + Error handlers
 // ═══════════════════════════════════════════
 app.use((_req, res) => res.status(404).json({ error: 'Endpoint tidak ditemukan' }));
@@ -466,6 +693,29 @@ app.use((err, _req, res, _next) => {
 // ═══════════════════════════════════════════
 async function bootstrap() {
   try {
+    // Create coupon tables if they don't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS coupon_events (
+        id SERIAL PRIMARY KEY,
+        description VARCHAR(200) NOT NULL,
+        total_quantity INTEGER NOT NULL,
+        valid_until TIMESTAMPTZ NOT NULL,
+        created_by INTEGER REFERENCES users(id),
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS coupons (
+        id SERIAL PRIMARY KEY,
+        event_id INTEGER NOT NULL REFERENCES coupon_events(id) ON DELETE CASCADE,
+        code VARCHAR(50) UNIQUE NOT NULL,
+        is_claimed BOOLEAN DEFAULT false,
+        claimed_at TIMESTAMPTZ,
+        claimed_by VARCHAR(50)
+      )
+    `);
+    console.log('🎫 Coupon tables ready');
+
     const existing = await pool.query("SELECT id FROM users WHERE email = 'admin@masjidkita.id'");
     if (existing.rows.length === 0) {
       const hash = await bcrypt.hash('admin123', BCRYPT_ROUNDS);
