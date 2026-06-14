@@ -11,6 +11,7 @@ MasjidKita adalah aplikasi web modern berbasis PWA (Progressive Web App) yang di
 - **Berita & Pengumuman**: Informasi kegiatan masjid terbaru.
 - **Admin Dashboard**: Panel manajemen untuk melihat riwayat donasi keseluruhan dan mengelola berita.
 - **Sistem Akun**: Registrasi, Login, dan rekam jejak infaq per individu (JWT Auth).
+- **E-Coupon**
 
 ---
 
