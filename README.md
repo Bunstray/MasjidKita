@@ -4,10 +4,10 @@ MasjidKita is a modern web application based on PWA (Progressive Web App) design
 
 ## Key Features
 
-- **Digital Quran**: Read the full Quran with audio, translations, and tajweed rules.
-- **Prayer Times**: Accurate prayer schedules based on the user's location.
+- **Digital Quran**: Read the full Quran with translations, and tajweed rules.
+- **Prayer Times**: Accurate prayer schedules based on Sleman time.
 - **Qibla Direction**: Integrated compass pointing to the Qibla.
-- **Digital Infaq**: Secure online donation system (supports anonymous donations) with transaction history and unique device tracking.
+- **Digital Infaq**: Simulated online donation system (supports anonymous donations) with transaction history and unique device tracking.
 - **News & Announcements**: Latest information on mosque activities.
 - **E-Kupon (Food Coupons)**: A smart, single-QR coupon distribution system. Admins print a single Event QR code. Congregants scan this master QR code to automatically claim an available digital coupon to their device. Double-claiming is prevented via device ID tracking.
 - **Admin Dashboard**: Management panel to view overall donation history, manage news, and create e-coupon events.
@@ -35,7 +35,7 @@ This system is configured so that both the Frontend and Backend can run together
 3. **Configure Environment Variables**:
    - Before clicking deploy, open the "Environment Variables" tab.
    - Add the following variables:
-     1. `DATABASE_URL` = `postgresql://postgres.probjxogsmzzdyuwzufb:MRBS_2046!!@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
+     1. `DATABASE_URL` = Your Database URL
      2. `JWT_SECRET` = (Enter a long, random secret key for admin sessions, e.g., `kunci_rahasia_masjidkita_123`)
      3. `VERCEL` = `1`
 4. **Deploy**:
