@@ -18,12 +18,14 @@ interface ClaimedCoupon {
   code: string;
   description: string;
   claimedAt: string;
+  validUntil?: string;
 }
 
 interface ClaimResult {
   code: string;
   description: string;
   claimedAt: string;
+  validUntil?: string;
 }
 
 const STORAGE_KEY = 'masjidkita_claimed_coupons';
@@ -31,7 +33,22 @@ const STORAGE_KEY = 'masjidkita_claimed_coupons';
 function getSavedCoupons(): ClaimedCoupon[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    
+    const parsed: ClaimedCoupon[] = JSON.parse(raw);
+    
+    // Filter out expired coupons
+    const validCoupons = parsed.filter(c => {
+      if (!c.validUntil) return true; // keep if we don't have validUntil
+      return new Date(c.validUntil) > new Date();
+    });
+
+    // If we removed some, update storage
+    if (validCoupons.length !== parsed.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(validCoupons));
+    }
+
+    return validCoupons;
   } catch {
     return [];
   }
@@ -93,12 +110,27 @@ export default function EKupon() {
             code: data.data?.code ?? cleanCode,
             description: data.data?.description ?? 'Kupon Makanan',
             claimedAt: data.data?.claimedAt ?? new Date().toISOString(),
+            validUntil: data.data?.validUntil,
           };
           setClaimResult(result);
           saveCoupon(result);
           setClaimedCoupons(getSavedCoupons());
         } else if (res.status === 409) {
           setError(data.error || 'Kupon sudah diklaim');
+          
+          // Re-display the already claimed coupon from response data
+          if (data.data) {
+            const result: ClaimResult = {
+              code: data.data.code,
+              description: data.data.description,
+              claimedAt: data.data.claimedAt,
+              validUntil: data.data.validUntil,
+            };
+            setClaimResult(result);
+            saveCoupon(result);
+            setClaimedCoupons(getSavedCoupons());
+            setError(null);
+          }
         } else if (res.status === 404) {
           setError(data.error || 'Kode kupon tidak ditemukan');
         } else if (res.status === 410) {
@@ -420,12 +452,13 @@ export default function EKupon() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05, duration: 0.3 }}
-                  className="flex items-center gap-3 rounded-xl bg-bg-card p-3.5 shadow-sm"
+                  onClick={() => setClaimResult(coupon)}
+                  className="pressable flex cursor-pointer items-center gap-3 rounded-xl bg-bg-card p-3.5 shadow-sm transition-colors hover:bg-bg-elevated"
                 >
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-50">
                     <CheckCircle2 size={18} className="text-emerald-500" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 text-left">
                     <p className="truncate font-mono text-xs font-bold tracking-wider text-text-primary">
                       {coupon.code}
                     </p>
