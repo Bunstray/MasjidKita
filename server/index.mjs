@@ -700,7 +700,7 @@ async function bootstrap() {
         description VARCHAR(200) NOT NULL,
         total_quantity INTEGER NOT NULL,
         valid_until TIMESTAMPTZ NOT NULL,
-        created_by INTEGER REFERENCES users(id),
+        created_by UUID REFERENCES users(id),
         created_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
