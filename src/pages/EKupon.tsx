@@ -480,7 +480,6 @@ export default function EKupon() {
           font-weight: 600 !important;
           font-size: 13px !important;
           cursor: pointer !important;
-          display: block !important;
           margin: 0 auto !important;
         }
         .ekupon-scanner-wrapper #ekupon-qr-reader video {
