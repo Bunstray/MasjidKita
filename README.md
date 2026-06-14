@@ -1,87 +1,83 @@
 # MasjidKita
 
-MasjidKita adalah aplikasi web modern berbasis PWA (Progressive Web App) yang dirancang untuk membantu pengelolaan masjid dan melayani jamaah. Dilengkapi dengan fitur waktu sholat, pembaca Al-Qur'an, arah kiblat, manajemen berita, serta sistem infaq digital terintegrasi yang aman.
+MasjidKita is a modern web application based on PWA (Progressive Web App) designed to assist in mosque management and serve the congregation. It is equipped with prayer times, a Quran reader, qibla direction, news management, a secure digital infaq system, and an event-based e-coupon system.
 
-## Fitur Utama
+## Key Features
 
-- **Al-Qur'an Digital**: Baca Al-Qur'an lengkap dengan audio, terjemahan, dan tajwid.
-- **Waktu Sholat**: Jadwal sholat akurat berdasarkan lokasi.
-- **Arah Kiblat**: Kompas penunjuk arah kiblat terintegrasi.
-- **Digital Infaq**: Sistem donasi online yang aman (mendukung Anonim) dengan riwayat transaksi.
-- **Berita & Pengumuman**: Informasi kegiatan masjid terbaru.
-- **Admin Dashboard**: Panel manajemen untuk melihat riwayat donasi keseluruhan dan mengelola berita.
-- **Sistem Akun**: Registrasi, Login, dan rekam jejak infaq per individu (JWT Auth).
-- **E-Coupon**
-
----
-
-## Panduan Deployment
-
-Sistem ini telah dikonfigurasi agar **Frontend dan Backend dapat berjalan bersama-sama secara gratis di Vercel**.
-
-### Arsitektur Hosting
-
-1. **Database**: Supabase PostgreSQL (Sudah di-setup, gratis tanpa kartu kredit).
-2. **Frontend & Backend (Monolith Serverless)**: Vercel.com
+- **Digital Quran**: Read the full Quran with audio, translations, and tajweed rules.
+- **Prayer Times**: Accurate prayer schedules based on the user's location.
+- **Qibla Direction**: Integrated compass pointing to the Qibla.
+- **Digital Infaq**: Secure online donation system (supports anonymous donations) with transaction history and unique device tracking.
+- **News & Announcements**: Latest information on mosque activities.
+- **E-Kupon (Food Coupons)**: A smart, single-QR coupon distribution system. Admins print a single Event QR code. Congregants scan this master QR code to automatically claim an available digital coupon to their device. Double-claiming is prevented via device ID tracking.
+- **Admin Dashboard**: Management panel to view overall donation history, manage news, and create e-coupon events.
+- **Account System**: JWT Authentication for the admin dashboard.
 
 ---
 
-### Langkah-langkah Deploy ke Vercel
+## Deployment Guide
 
-1. **Buat Akun Vercel**: Buka [Vercel.com](https://vercel.com) dan daftar menggunakan akun GitHub Anda.
+This system is configured so that both the Frontend and Backend can run together for free on Vercel as a serverless monolith.
+
+### Hosting Architecture
+
+1. **Database**: Supabase PostgreSQL (Pre-configured, free tier).
+2. **Frontend & Backend**: Vercel
+
+---
+
+### Steps to Deploy to Vercel
+
+1. **Create a Vercel Account**: Go to Vercel.com and sign up using your GitHub account.
 2. **Import Project**:
-   - Klik **Add New...** lalu pilih **Project**.
-   - Import repository GitHub aplikasi MasjidKita ini.
-3. **Konfigurasi Environment Variables**:
-   - Sebelum klik tombol deploy, buka tab **Environment Variables**.
-   - Tambahkan 3 variabel berikut:
+   - Click "Add New..." and select "Project".
+   - Import this MasjidKita GitHub repository.
+3. **Configure Environment Variables**:
+   - Before clicking deploy, open the "Environment Variables" tab.
+   - Add the following variables:
      1. `DATABASE_URL` = `postgresql://postgres.probjxogsmzzdyuwzufb:MRBS_2046!!@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
-     2. `JWT_SECRET` = _(Isi dengan password rahasia acak yang panjang, contoh: `kunci_rahasia_masjidkita_123`)_
+     2. `JWT_SECRET` = (Enter a long, random secret key for admin sessions, e.g., `kunci_rahasia_masjidkita_123`)
      3. `VERCEL` = `1`
 4. **Deploy**:
-   - Klik tombol **Deploy**.
-   - Tunggu proses _build_ selesai. Vercel akan membaca file `vercel.json` secara otomatis, mengubah API backend (Express) menjadi Serverless Functions, dan me-render frontend Vite.
-5. **Update VITE_API_URL**:
-   - Setelah deploy selesai, Vercel akan memberikan domain publik (contoh: `https://masjidkita-app.vercel.app`).
-   - Pergi ke menu **Settings > Environment Variables** di dashboard project Vercel Anda.
-   - Tambahkan variabel baru: `VITE_API_URL` dan isi dengan domain publik aplikasi Vercel Anda tersebut (contoh: `https://masjidkita-app.vercel.app`).
-   - Pergi ke menu **Deployments**, klik titik tiga pada deployment terbaru, lalu pilih **Redeploy** agar frontend mendapatkan URL API yang benar.
-
-**Selesai!**
+   - Click the "Deploy" button.
+   - Wait for the build process to finish. Vercel will automatically read the `vercel.json` file, convert the Express backend into Serverless Functions, and build the Vite frontend.
+   - The application will automatically route `/api/*` requests to the backend serverless functions.
 
 ---
 
-## Cara Menjalankan Secara Lokal (Development)
+## How to Run Locally (Development)
 
-Jika Anda ingin mengembangkan aplikasi ini di komputer Anda sendiri:
+If you wish to develop this application locally on your machine:
 
-1. **Clone repository & Install Dependencies:**
+1. **Clone repository and Install Dependencies:**
 
    ```bash
    npm install
    ```
 
-2. **Jalankan Backend (Express API):**
+2. **Run the Backend (Express API):**
 
    ```bash
    npm run server
    ```
 
-   _Server akan berjalan di http://localhost:3001_
+   The server will run on http://localhost:3001
 
-3. **Buka Terminal Baru, Jalankan Frontend (Vite):**
+3. **Open a New Terminal, Run the Frontend (Vite):**
+
    ```bash
    npm run dev
    ```
-   _Aplikasi akan terbuka di http://localhost:5173_
+
+   The application will open at http://localhost:5173. The Vite development server is configured to proxy all `/api` requests to the local backend automatically.
 
 ---
 
-## Akses Admin Default
+## Default Admin Access
 
-Saat server pertama kali berjalan, sistem akan secara otomatis membuat akun Admin _default_ jika belum ada:
+When the server runs for the first time, the system will automatically create a default Admin account if one does not exist:
 
 - **Email**: `admin@masjidkita.id`
 - **Password**: `admin123`
 
-_(Sangat disarankan untuk segera mengubah password ini setelah berhasil login di server production demi keamanan)_
+(It is highly recommended to change this password immediately after successfully logging into the production server for security purposes)
