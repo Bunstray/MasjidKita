@@ -448,30 +448,52 @@ export default function EKupon() {
         .ekupon-scanner-wrapper #ekupon-qr-reader a {
           display: none !important;
         }
+        .ekupon-scanner-wrapper #ekupon-qr-reader img {
+          margin: 0 auto 16px auto !important;
+          display: block !important;
+        }
+        .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__dashboard_section_csr {
+          text-align: center !important;
+        }
+        .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__dashboard_section_csr > span {
+          display: block !important;
+          margin-bottom: 8px !important;
+          font-weight: 500 !important;
+        }
+        .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__dashboard_section_csr select {
+          display: block !important;
+          margin: 0 auto 16px auto !important;
+          width: 100% !important;
+          max-width: 250px !important;
+          border-radius: 8px !important;
+          padding: 8px 12px !important;
+          border: 1px solid #e5e7eb !important;
+          font-size: 13px !important;
+          background-color: #f9fafb !important;
+        }
         .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__dashboard_section_csr button {
           background-color: var(--color-primary, #16a34a) !important;
           color: white !important;
           border: none !important;
           border-radius: 10px !important;
-          padding: 10px 20px !important;
+          padding: 10px 24px !important;
           font-weight: 600 !important;
           font-size: 13px !important;
           cursor: pointer !important;
-        }
-        .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__dashboard_section_csr select {
-          border-radius: 8px !important;
-          padding: 6px 10px !important;
-          border: 1px solid #e5e7eb !important;
-          font-size: 13px !important;
+          display: block !important;
+          margin: 0 auto !important;
         }
         .ekupon-scanner-wrapper #ekupon-qr-reader video {
           border-radius: 8px !important;
+          margin: 0 auto !important;
         }
         .ekupon-scanner-wrapper #ekupon-qr-reader #ekupon-qr-reader__scan_region {
           border: none !important;
+          margin: 0 auto !important;
+          text-align: center !important;
         }
         .ekupon-scanner-wrapper #ekupon-qr-reader__dashboard_section {
-          padding: 8px 0 !important;
+          padding: 12px 0 !important;
         }
       `}</style>
     </div>
