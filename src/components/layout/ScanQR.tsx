@@ -16,7 +16,7 @@ export default function ScanQR() {
     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
     return () => {
-      html5QrcodeScanner.clear().catch((error) => {
+      html5QrcodeScanner.clear().catch((error: unknown) => {
         console.warn("Failed to clear QR scanner", error);
       });
     };

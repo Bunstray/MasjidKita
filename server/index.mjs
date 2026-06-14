@@ -19,7 +19,7 @@ const { Pool } = pg;
 const PORT = process.env.PORT || 3001;
 const DATABASE_URL = process.env.DATABASE_URL ||
   'postgresql://postgres.probjxogsmzzdyuwzufb:MRBS_2046!!@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres';
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(64).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET || 'masjidkita_jwt_secret_v2_stable_key_2026';
 const JWT_EXPIRY = '7d';
 const BCRYPT_ROUNDS = 12;
 

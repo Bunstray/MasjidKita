@@ -20,6 +20,7 @@ export default function AdminInfaq() {
   const [receipts, setReceipts] = useState<AdminInfaqReceipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAllInfaq = async () => {
@@ -33,9 +34,13 @@ export default function AdminInfaq() {
           const data = await res.json();
           setReceipts(data.data);
           setTotal(data.total);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          setError(data.error || `Gagal memuat data (${res.status})`);
         }
       } catch (err) {
         console.error('Failed to fetch admin infaq', err);
+        setError('Gagal terhubung ke server');
       } finally {
         setLoading(false);
       }
@@ -50,6 +55,20 @@ export default function AdminInfaq() {
     return (
       <div className="flex h-64 items-center justify-center">
         <Loader2 size={32} className="animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
+        <p className="text-sm font-medium text-red-500">{error}</p>
+        <button
+          onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white"
+        >
+          Coba Lagi
+        </button>
       </div>
     );
   }
