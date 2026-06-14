@@ -54,6 +54,15 @@ export default function EKupon() {
   const [claimedCoupons, setClaimedCoupons] = useState<ClaimedCoupon[]>(getSavedCoupons);
   const [scannerReady, setScannerReady] = useState(false);
 
+  const getDeviceId = () => {
+    let id = localStorage.getItem('masjidkita_device_id');
+    if (!id) {
+      id = 'dev_' + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('masjidkita_device_id', id);
+    }
+    return id;
+  };
+
   const claimCoupon = useCallback(
     async (code: string) => {
       if (loading || !code.trim()) return;
@@ -62,30 +71,40 @@ export default function EKupon() {
       setClaimResult(null);
 
       try {
-        const res = await fetch('/api/coupons/claim', {
+        const cleanCode = code.trim();
+        const isEvent = cleanCode.startsWith('EVENT:');
+        
+        const endpoint = isEvent ? '/api/coupons/claim-event' : '/api/coupons/claim';
+        const body = isEvent ? { eventId: cleanCode.replace('EVENT:', '') } : { code: cleanCode };
+
+        const res = await fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: code.trim() }),
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-device-id': getDeviceId()
+          },
+          body: JSON.stringify(body),
         });
 
+        const data = await res.json();
+
         if (res.ok) {
-          const data = await res.json();
           const result: ClaimResult = {
-            code: data.code ?? code.trim(),
-            description: data.description ?? data.event ?? 'Kupon Makanan',
-            claimedAt: data.claimedAt ?? new Date().toISOString(),
+            code: data.data?.code ?? cleanCode,
+            description: data.data?.description ?? 'Kupon Makanan',
+            claimedAt: data.data?.claimedAt ?? new Date().toISOString(),
           };
           setClaimResult(result);
           saveCoupon(result);
           setClaimedCoupons(getSavedCoupons());
         } else if (res.status === 409) {
-          setError('Kupon sudah diklaim');
+          setError(data.error || 'Kupon sudah diklaim');
         } else if (res.status === 404) {
-          setError('Kode kupon tidak ditemukan');
+          setError(data.error || 'Kode kupon tidak ditemukan');
         } else if (res.status === 410) {
-          setError('Kupon sudah kadaluarsa');
+          setError(data.error || 'Kupon sudah kadaluarsa');
         } else {
-          setError('Terjadi kesalahan. Silakan coba lagi.');
+          setError(data.error || 'Terjadi kesalahan. Silakan coba lagi.');
         }
       } catch {
         setError('Gagal terhubung ke server. Periksa koneksi internet Anda.');

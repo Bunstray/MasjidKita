@@ -303,13 +303,22 @@ export default function AdminEKupon() {
                     <span className={isExpired ? 'text-red-500 font-semibold' : ''}>
                       {isExpired ? 'Kadaluarsa' : `Berlaku hingga ${new Date(event.validUntil).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
                     </span>
-                    <button
-                      onClick={() => toggleExpand(event.id)}
-                      className="pressable flex items-center gap-1 rounded-lg px-2 py-1 font-semibold text-primary transition-colors hover:bg-primary-50"
-                    >
-                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                      {isExpanded ? 'Tutup' : 'Lihat Kode'}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => showQR(`EVENT:${event.id}`)}
+                        className="pressable flex items-center gap-1 rounded-lg px-2 py-1 font-semibold text-primary transition-colors hover:bg-primary-50"
+                      >
+                        <QrCode size={14} />
+                        Cetak QR Event
+                      </button>
+                      <button
+                        onClick={() => toggleExpand(event.id)}
+                        className="pressable flex items-center gap-1 rounded-lg px-2 py-1 font-semibold text-text-secondary transition-colors hover:bg-bg-elevated"
+                      >
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        {isExpanded ? 'Tutup' : 'Lihat Kode'}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -348,13 +357,6 @@ export default function AdminEKupon() {
                                   </span>
                                 )}
                               </div>
-                              <button
-                                onClick={() => showQR(c.code)}
-                                className="pressable rounded-lg bg-primary-50 p-1.5 text-primary transition-colors hover:bg-primary-100"
-                                title="Generate QR"
-                              >
-                                <QrCode size={14} />
-                              </button>
                             </div>
                           ))
                         )}

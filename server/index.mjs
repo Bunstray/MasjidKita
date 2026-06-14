@@ -625,11 +625,12 @@ app.post('/api/coupons/claim', async (req, res) => {
     }
 
     // Mark as claimed
-    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
-    const ipHash = hashIP(ip);
+    const deviceIdHeader = req.headers['x-device-id'];
+    const deviceId = typeof deviceIdHeader === 'string' ? deviceIdHeader : hashIP(req.ip || req.socket?.remoteAddress || 'unknown');
+    
     await pool.query(
       `UPDATE coupons SET is_claimed = true, claimed_at = NOW(), claimed_by = $1 WHERE id = $2`,
-      [ipHash, coupon.id]
+      [deviceId, coupon.id]
     );
 
     res.json({
@@ -641,6 +642,77 @@ app.post('/api/coupons/claim', async (req, res) => {
     });
   } catch (err) {
     console.error('POST /api/coupons/claim error:', err.message);
+    res.status(500).json({ error: 'Terjadi kesalahan server' });
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUPONS: Public — Claim a coupon by Event ID
+// ═══════════════════════════════════════════
+app.post('/api/coupons/claim-event', async (req, res) => {
+  try {
+    const { eventId } = req.body;
+    const cleanEventId = Number(eventId);
+    if (!Number.isInteger(cleanEventId)) return res.status(400).json({ error: 'Event ID tidak valid' });
+
+    const deviceIdHeader = req.headers['x-device-id'];
+    if (!deviceIdHeader || typeof deviceIdHeader !== 'string') {
+       return res.status(400).json({ error: 'Device ID diperlukan' });
+    }
+
+    // Check if event exists and is valid
+    const eventResult = await pool.query('SELECT * FROM coupon_events WHERE id = $1', [cleanEventId]);
+    if (eventResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Event tidak ditemukan' });
+    }
+    const event = eventResult.rows[0];
+    if (new Date(event.valid_until) < new Date()) {
+      return res.status(410).json({ error: 'Event sudah kadaluarsa' });
+    }
+
+    // Check if this device already claimed a coupon for this event
+    const alreadyClaimed = await pool.query(
+      'SELECT id, code, claimed_at FROM coupons WHERE event_id = $1 AND claimed_by = $2 LIMIT 1',
+      [cleanEventId, deviceIdHeader]
+    );
+
+    if (alreadyClaimed.rows.length > 0) {
+      const c = alreadyClaimed.rows[0];
+      return res.status(409).json({ error: 'Anda sudah mengklaim kupon untuk event ini', data: {
+        code: c.code, description: event.description,
+        claimedAt: c.claimed_at,
+      }});
+    }
+
+    // Find one available coupon and claim it (Atomic operation)
+    // We use UPDATE ... WHERE id = (SELECT ... FOR UPDATE SKIP LOCKED) RETURNING *
+    const claimResult = await pool.query(
+      `UPDATE coupons 
+       SET is_claimed = true, claimed_at = NOW(), claimed_by = $1
+       WHERE id = (
+         SELECT id FROM coupons 
+         WHERE event_id = $2 AND is_claimed = false 
+         LIMIT 1 
+         FOR UPDATE SKIP LOCKED
+       )
+       RETURNING id, code, claimed_at`,
+      [deviceIdHeader, cleanEventId]
+    );
+
+    if (claimResult.rows.length === 0) {
+      return res.status(410).json({ error: 'Kupon untuk event ini sudah habis' });
+    }
+
+    const coupon = claimResult.rows[0];
+    res.json({
+      success: true,
+      data: {
+        code: coupon.code, description: event.description,
+        validUntil: event.valid_until, claimedAt: coupon.claimed_at,
+      },
+    });
+  } catch (err) {
+    console.error('POST /api/coupons/claim-event error:', err.message);
     res.status(500).json({ error: 'Terjadi kesalahan server' });
   }
 });
